@@ -1,204 +1,48 @@
-Execute Commands with the Bash Shell
-Objectives
-Save time when running commands from a shell prompt with Bash shortcuts.
+Lab: Access the Command Line
+Use the Bash shell to execute commands.
 
-Basic Command Syntax
-The GNU Bourne-Again Shell (bash) is a program that interprets commands that the user types. Each string that is typed into the shell can have up to three parts: the command, options (which usually begin with a hyphen - or double hyphen -- characters), and arguments. Each word that is typed into the shell is separated from other words with spaces. Commands are the names of programs that are installed on the system. Each command has its options and arguments.
+Outcomes
 
-When you are ready to execute a command, press the Enter key. Type each command on a separate line. The command output is displayed before the following shell prompt appears.
 
-[user@host ~]$ whoami
-user
-[user@host ~]$
-To type more than one command on a single line, use the semicolon (;) as a command separator. A semicolon is a member of a class of characters called metacharacters that have a special interpretation for bash. In this case, the output of both commands is displayed before the following shell prompt appears.
+Successfully run simple programs from the Bash shell command line.
 
-The following example shows how to combine two commands (command1 and command2) on the command line.
+Execute commands to identify file types and to display parts of text files.
 
-[user@host ~]$ command1 ; command2
-command1 output
-command2 output
-[user@host ~]$
-Write Simple Commands
-The date command displays the current date and time. The superuser or a privileged user can also use the date command to set the system clock. Use the plus sign (+) as an argument to specify a format string for the date command.
+Practice using some Bash command history shortcuts to more efficiently repeat commands or parts of commands.
 
-[user@host ~]$ date
-Sun Feb 27 08:32:42 PM EST 2022
-[user@host ~]$ date +%R
-20:33
-[user@host ~]$ date +%x
-02/27/2022
-The passwd command with no options changes the current user's password. To change the password, first specify the original password for the account. By default, the passwd command is configured to require a strong password, to consist of lowercase letters, uppercase letters, numbers, and symbols, and not to be based on a dictionary word. A superuser or privileged user can use the passwd command to change another user's password.
 
-[user@host ~]$ passwd
-Changing password for user user.
-Current password: old_password
-New password: new_password
-Retype new password: new_password
-passwd: all authentication tokens updated successfully.
-Linux does not require file name extensions to classify files by type. The file command scans the compiled header of a file for a 2-digit magic number and displays its type. Text files are recognized because they are not compiled.
+As the student user on the workstation machine, use the lab command to prepare your system for this exercise.
 
-[user@host ~]$ file /etc/passwd
-/etc/passwd: ASCII text
-[user@host ~]$ file /bin/passwd
-/bin/passwd: setuid ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=a467cb9c8fa7306d41b96a820b0178f3a9c66055, for GNU/Linux 3.2.0, stripped
-[user@host ~]$ file /home
-/home: directory
-View the Contents of Files
-The cat command is often used in Linux. Use this command to create single or multiple files, view the contents of files, concatenate the contents from various files, and redirect contents of the file to a terminal or to files.
+This command prepares your environment and ensures that all required resources are available.
 
-The following example shows how to view the contents of the /etc/passwd file:
+[student@workstation ~]$ lab start cli-review
+Instructions
 
-[user@host ~]$ cat /etc/passwd
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-adm:x:3:4:adm:/var/adm:/sbin/nologin
-...output omitted...
-To display the contents of multiple files, add the file names to the cat command as arguments:
+Use the date command to display the current time and date.
 
-[user@host ~]$ cat file1 file2
-Hello World!!
-Introduction to Linux commands.
-Some files are long and might need more space to be displayed than the terminal provides. The cat command does not display the contents of a file as pages. The less command displays one page of a file at a time and you can scroll at your leisure.
+Display the current time in 24-hour clock time (for example, 13:57). Hint: The format string that displays that output is %R.
 
-Use the less command to page forward and backward through longer files than can fit on one terminal window. Use the UpArrow key and the DownArrow key to scroll up and down. Press q to exit the command.
+What kind of file is /home/student/zcat? Is it readable by humans?
 
-The head and tail commands display the beginning and the end of a file, respectively. By default, these commands display 10 lines of the file, but they both have a -n option to specify a different number of lines.
+Use the wc command and Bash shortcuts to display the size of the zcat file.
 
-[user@host ~]$ head /etc/passwd
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-adm:x:3:4:adm:/var/adm:/sbin/nologin
-lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
-sync:x:5:0:sync:/sbin:/bin/sync
-shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
-halt:x:7:0:halt:/sbin:/sbin/halt
-mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
-operator:x:11:0:operator:/root:/sbin/nologin
-[user@host ~]$ tail -n 3 /etc/passwd
-gdm:x:42:42::/var/lib/gdm:/sbin/nologin
-gnome-initial-setup:x:980:978::/run/gnome-initial-setup/:/sbin/nologin
-dnsmasq:x:979:977:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/sbin/nologin
-The wc command counts lines, words, and characters in a file. Use the -l, -w, or -c options to display only the given number of lines, words, or characters, respectively.
+Display the first 10 lines of the zcat file.
 
-[user@host ~]$ wc /etc/passwd
-41   98 2338 /etc/passwd
-[user@host ~]$ wc -l /etc/passwd ; wc -l /etc/group
-41 /etc/passwd
-63 /etc/group
-[user@host ~]$ wc -c /etc/group /etc/hosts
-883 /etc/group
-114 /etc/hosts
-997 total
-Understand Tab Completion
-With tab completion, users can quickly complete commands or file names after typing enough at the prompt to make it unique. If the typed characters are not unique, then pressing the Tab key twice displays all commands that begin with the typed characters.
+Display the last 10 lines of the zcat file.
 
-[user@host ~]$ pasTab+Tab1
-passwd       paste        pasuspender
-[user@host ~]$ passTab 2
-[user@host ~]$ passwd
-Changing password for user user.
-Current password:
-1
+Repeat the previous command exactly with four or fewer keystrokes.
 
-Press Tab twice.
+Use the tail command -n 20 option to display the last 20 lines in the file. Use command-line editing to accomplish this task with a minimal number of keystrokes.
 
-2
+Use the shell history to run the date +%R command again.
 
-Press Tab once.
+Evaluation
 
-Tab completion helps to complete file names when typing them as arguments to commands. Press Tab to complete as much of the file name as possible. Pressing Tab a second time causes the shell to list all files that the current pattern matches. Type additional characters until the name is unique, and then use tab completion to complete the command.
+As the student user on the workstation machine, use the lab command to grade your work. Correct any reported failures and rerun the command until successful.
 
-[user@host ~]$ ls /etc/pasTab 1
-[user@host ~]$ ls /etc/passwdTab 2
-passwd   passwd-
-1
+[student@workstation ~]$ lab grade cli-review
+Finish
 
-Press Tab once.
+On the workstation machine, change to the student user home directory and use the lab command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.
 
-2
-
-Press Tab once.
-
-Use the useradd command to create users on the system. The useradd command has many options that might be hard to remember. By using tab completion, you can complete the option name with minimal typing.
-
-[root@host ~]# useradd --Tab+Tab 1
---badnames              --gid                   --no-log-init           --shell
---base-dir              --groups                --non-unique            --skel
---btrfs-subvolume-home  --help                  --no-user-group         --system
---comment               --home-dir              --password              --uid
---create-home           --inactive              --prefix                --user-group
---defaults              --key                   --root
---expiredate            --no-create-home        --selinux-user
-1
-
-Press Tab twice.
-
-Write a Long Command on Multiple Lines
-Commands with many options and arguments can quickly become long and are automatically wrapped by the command window when the cursor reaches the right margin. Instead, type a long command by using more than one line for easier reading.
-
-To write one command in more than one line, use a backslash character (\), which is referred to as the escape character. The backslash character ignores the meaning of the following character.
-
-Previously, you learned that to complete a command entry, you press the Enter key, the newline character. By escaping the newline character, the shell moves to a new command line without executing the command. This way, the shell acknowledges the request by displaying a continuation prompt on an empty new line, which is known as the secondary prompt, and uses the greater-than character (>) by default. Commands can continue over many lines.
-
-One issue with the secondary prompt's use of the greater-than character (>) is that new learners might mistakenly insert it as part of the typed command. Then, the shell interprets a typed greater-than character as output redirection, which the user did not intend. Output redirection is discussed in an upcoming chapter. This course book does not show secondary prompts in screen outputs, to avoid confusion. A user still sees the secondary prompt in their shell window, but the course material intentionally displays only the characters to be typed, as demonstrated in the following example.
-
-[user@host ~]$ head -n 3 \
-/usr/share/dict/words \
-/usr/share/dict/linux.words
-==> /usr/share/dict/words <==
-1080
-10-point
-10th
-
-==> /usr/share/dict/linux.words <==
-1080
-10-point
-10th
-Display the Command History
-The history command displays a list of previously executed commands that are prefixed with a command number.
-
-The exclamation point character (!) is a metacharacter to expand previous commands without retyping them. The !number command expands to the command that matches the specified number. The !string command expands to the most recent command that begins with the specified string.
-
-[user@host ~]$ history
-...output omitted...
-   23  clear
-   24  who
-   25  pwd
-   26  ls /etc
-   27  uptime
-   28  ls -l
-   29  date
-   30  history
-[user@host ~]$ !ls
-ls -l
-total 0
-drwxr-xr-x. 2 student student 6 Feb 27 19:24 Desktop
-...output omitted...
-[user@host ~]$ !26
-ls /etc
-abrt                     hosts                     pulse
-adjtime                  hosts.allow               purple
-aliases                  hosts.deny                qemu-ga
-...output omitted...
-The arrow keys help to navigate through previous commands in the shell's history. The UpArrow edits the previous command in the history list. The DownArrow edits the next command in the history list. The LeftArrow and RightArrow move the cursor left and right in the current command from the history list so that you can edit the command before running it.
-
-Use either the Esc+. or Alt+. key combination simultaneously to insert the last word of the previous command at the cursor's current location. The repeated use of the key combination replaces that text with the last word of earlier commands in history. The Alt+. key combination is particularly convenient, because you can hold down Alt and press . repeatedly to quickly cycle earlier commands.
-
-Edit the Command Line
-When used interactively, bash has a command-line editing feature. Use the text editor commands to move around and modify the currently typed command. Using the arrow keys to move within the current command and to step through the command history was introduced earlier in this section. The following table shows further powerful editing commands.
-
-Table 2.1. Useful Command-line Editing Shortcuts
-
-Shortcut	Description
-Ctrl+A	Jump to the beginning of the command line.
-Ctrl+E	Jump to the end of the command line.
-Ctrl+U	Clear from the cursor to the beginning of the command line.
-Ctrl+K	Clear from the cursor to the end of the command line.
-Ctrl+LeftArrow	Jump to the beginning of the previous word on the command line.
-Ctrl+RightArrow	Jump to the end of the next word on the command line.
-Ctrl+R	Search the history list of commands for a pattern.
-
-These command-line editing commands are the most helpful for new users. For other commands, refer to the bash(1) man page.
-
+[student@workstation ~]$ lab finish cli-review
