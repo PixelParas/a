@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+# ============================================================
+# Lab: Access the Command Line
+# Exercise: cli-review
+# ============================================================
+
+set -u
+
+echo "========================================================"
+echo "Starting cli-review lab..."
+echo "========================================================"
+
+cd "$HOME" || exit 1
+
+lab start cli-review || {
+    echo "ERROR: lab start cli-review failed."
+    exit 1
+}
+
+echo
+echo "========================================================"
+echo "1. Display current date and time"
+echo "========================================================"
+date
+
+echo
+echo "========================================================"
+echo "2. Display current time in 24-hour format"
+echo "========================================================"
+date +%R
+
+echo
+echo "========================================================"
+echo "3. Determine file type of /home/student/zcat"
+echo "========================================================"
+file /home/student/zcat
+
+echo
+echo "The 'file' output above tells us whether zcat is a"
+echo "human-readable text file, executable/binary, etc."
+
+echo
+echo "========================================================"
+echo "4. Display size of zcat using wc"
+echo "========================================================"
+
+# wc -c reports the number of bytes.
+wc -c /home/student/zcat
+
+echo
+echo "========================================================"
+echo "5. Display first 10 lines"
+echo "========================================================"
+head /home/student/zcat
+
+echo
+echo "========================================================"
+echo "6. Display last 10 lines"
+echo "========================================================"
+tail /home/student/zcat
+
+echo
+echo "========================================================"
+echo "7. Repeat previous command"
+echo "========================================================"
+
+# In the interactive exercise this would normally be:
+#
+#   UpArrow + Enter
+#
+# which is only two keystrokes.
+#
+# Execute the equivalent command directly for automation.
+tail /home/student/zcat
+
+echo
+echo "========================================================"
+echo "8. Display last 20 lines"
+echo "========================================================"
+
+# In the interactive exercise, you would edit the previous
+# tail command and add '-n 20'.
+tail -n 20 /home/student/zcat
+
+echo
+echo "========================================================"
+echo "9. Run date +%R again"
+echo "========================================================"
+
+# The exercise asks us to retrieve this from shell history.
+# A non-interactive script does not use interactive Readline
+# history in the same way, so execute the required command.
+date +%R
+
+echo
+echo "========================================================"
+echo "10. Grade lab"
+echo "========================================================"
+
+cd "$HOME" || exit 1
+
+if lab grade cli-review; then
+    echo
+    echo "========================================================"
+    echo "GRADE COMPLETED"
+    echo "========================================================"
+    echo
+    echo "If the grade above reports SUCCESS, press Enter to finish."
+    echo "If it reports a failure, press Ctrl+C and inspect the result."
+    read -r
+
+    echo
+    echo "========================================================"
+    echo "Finishing lab..."
+    echo "========================================================"
+
+    cd "$HOME" || exit 1
+    lab finish cli-review
+else
+    echo
+    echo "========================================================"
+    echo "GRADE FAILED"
+    echo "========================================================"
+    echo "The lab was NOT finished so you can correct the problem."
+    exit 1
+fi
