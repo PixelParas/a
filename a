@@ -1,48 +1,41 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # ==============================================================================
 # Script Name: cli-desktop-lab.sh
-# Description: Automates the setup, terminal tasks, and cleanup for the 
+# Description: Automates the setup, terminal tasks, and cleanup for the
 #              "Access the Command Line with the Desktop" guided exercise.
 # ==============================================================================
 
-# Exit immediately if a command exits with a non-zero status
-set -e
-
-# 1. Prepare the environment
 echo "========================================================"
 echo "Step 1: Preparing the lab environment..."
 echo "========================================================"
 lab start cli-desktop
 
-# 2. GUI Login Reminder
-echo ""
+echo
 echo "========================================================"
 echo "Step 2: GNOME Desktop Login"
 echo "========================================================"
 echo "-> Action required: Ensure you are logged into the GNOME 40"
 echo "   desktop as user 'student' with password 'student'."
-read -p "Press [Enter] once you are logged into the desktop and ready to continue..."
+read -r -p "Press [Enter] once you are logged into the desktop and ready to continue..."
 
-# 3. Change the password
-echo ""
+echo
 echo "========================================================"
 echo "Step 3: Changing the password for user 'student'..."
 echo "========================================================"
 echo "You will now be prompted to change your password."
 echo "Current Password: student"
 echo "New Password:     55TurnK3y"
-echo ""
+echo
 
-# Using passwd interactively or via chpasswd for automation script safety:
-# (Note: In a true interactive shell, the user runs 'passwd')
-echo -e "student\n55TurnK3y\n55TurnK3y" | passwd
+# Interactive password change
+passwd
 
-echo ""
+echo
 echo "Password successfully updated!"
 
-# 4. Verification and GUI Interactions Reminder
-echo ""
+echo
 echo "========================================================"
 echo "Step 4: GUI Verification & Testing"
 echo "========================================================"
@@ -51,18 +44,16 @@ echo "  1. Log out (System Menu -> Power Off/Log Out -> Log Out)."
 echo "  2. Log back in using your NEW password ('55TurnK3y')."
 echo "  3. Lock the screen (System Menu -> Lock button)."
 echo "  4. Unlock the screen using '55TurnK3y'."
-echo "  5. Test Power Off (System Menu -> Power Off/Log Out -> Power Off)"
-     and click [Cancel]."
-echo ""
-read -p "Press [Enter] after you have completed these desktop verification steps..."
+echo "  5. Test Power Off (System Menu -> Power Off/Log Out -> Power Off) and click [Cancel]."
+echo
+read -r -p "Press [Enter] after you have completed these desktop verification steps..."
 
-# 5. Finish and Cleanup
-echo ""
+echo
 echo "========================================================"
 echo "Step 5: Cleaning up and finishing the lab..."
 echo "========================================================"
 cd ~
 lab finish cli-desktop
 
-echo ""
+echo
 echo "Lab 'cli-desktop' completed successfully!"
