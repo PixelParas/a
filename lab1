@@ -1,59 +1,53 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ==============================================================================
-# Script Name: cli-desktop-lab.sh
-# Description: Automates the setup, terminal tasks, and cleanup for the
-#              "Access the Command Line with the Desktop" guided exercise.
-# ==============================================================================
+# ------------------------------------------------------------------------------
+# Human Typing Simulation Helper
+# ------------------------------------------------------------------------------
+type_and_run() {
+    local cmd="$1"
+    # Match standard Red Hat / Fedora lab prompt format
+    local prompt="[student@desktop ~]$ "
+    
+    echo -n "$prompt"
+    
+    # Simulate realistic keystroke timing with slight random delays
+    for (( i=0; i<${#cmd}; i++ )); do
+        echo -n "${cmd:$i:1}"
+        sleep "0.0$(( RANDOM % 4 + 3 ))"
+    done
+    echo
+    sleep 0.6
+    
+    # Execute the actual command
+    eval "$cmd"
+    sleep 1
+}
 
-echo "========================================================"
-echo "Step 1: Preparing the lab environment..."
-echo "========================================================"
-lab start cli-desktop
+# ------------------------------------------------------------------------------
+# Interactive Lab Execution
+# ------------------------------------------------------------------------------
 
-echo
-echo "========================================================"
-echo "Step 2: GNOME Desktop Login"
-echo "========================================================"
-echo "-> Action required: Ensure you are logged into the GNOME 40"
-echo "   desktop as user 'student' with password 'student'."
-read -r -p "Press [Enter] once you are logged into the desktop and ready to continue..."
+# Clear screen to start on a clean terminal slate
+clear
 
-echo
-echo "========================================================"
-echo "Step 3: Changing the password for user 'student'..."
-echo "========================================================"
-echo "You will now be prompted to change your password."
-echo "Current Password: student"
-echo "New Password:     55TurnK3y"
-echo
-
-# Interactive password change
-passwd
-
-echo
-echo "Password successfully updated!"
-
-echo
-echo "========================================================"
-echo "Step 4: GUI Verification & Testing"
-echo "========================================================"
-echo "Please perform the following manual checks in your GNOME desktop:"
-echo "  1. Log out (System Menu -> Power Off/Log Out -> Log Out)."
-echo "  2. Log back in using your NEW password ('55TurnK3y')."
-echo "  3. Lock the screen (System Menu -> Lock button)."
-echo "  4. Unlock the screen using '55TurnK3y'."
-echo "  5. Test Power Off (System Menu -> Power Off/Log Out -> Power Off) and click [Cancel]."
-echo
-read -r -p "Press [Enter] after you have completed these desktop verification steps..."
+# Step 1: Start the lab
+type_and_run "lab start cli-desktop"
 
 echo
-echo "========================================================"
-echo "Step 5: Cleaning up and finishing the lab..."
-echo "========================================================"
-cd ~
-lab finish cli-desktop
+# Pause briefly as if checking the desktop GUI
+sleep 2
+
+# Step 2: Change password interactively
+type_and_run "passwd"
 
 echo
-echo "Lab 'cli-desktop' completed successfully!"
+# Simulate brief pause before testing GUI tasks
+sleep 2
+
+# Step 3: GUI Verification Pause
+read -r -p "[student@desktop ~]$ " _
+
+# Step 4: Cleanup
+type_and_run "cd ~"
+type_and_run "lab finish cli-desktop"
