@@ -116,5 +116,7 @@ lab grade files-manage
 HIST
 
 # Grade the lab
-echo "[student@workstation ~]$ lab grade files-manage"
-lab grade files-manage
+echo "[student@workstation ~]$ lab finish files-manage"
+lab finish files-manage
+
+
