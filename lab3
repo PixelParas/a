@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Lab preparation
+echo "[student@workstation ~]$ lab start cli-review"
+lab start cli-review
+
+# Step 1: Display time and date
+echo "[student@workstation ~]$ date"
+date
+
+# Step 2: 24-hour clock time
+echo "[student@workstation ~]$ date +%R"
+date +%R
+
+# Step 3: Identify file type
+echo "[student@workstation ~]$ file /home/student/zcat"
+file /home/student/zcat
+
+# Step 4: Display size using wc
+echo "[student@workstation ~]$ wc /home/student/zcat"
+wc /home/student/zcat
+
+# Step 5: First 10 lines
+echo "[student@workstation ~]$ head /home/student/zcat"
+head /home/student/zcat
+
+# Step 6: Last 10 lines
+echo "[student@workstation ~]$ tail /home/student/zcat"
+tail /home/student/zcat
+
+# Step 7: Repeat previous command (simulating '!!')
+echo "[student@workstation ~]$ !!"
+tail /home/student/zcat
+
+# Step 8: Edit command to show last 20 lines
+echo "[student@workstation ~]$ tail -n 20 /home/student/zcat"
+tail -n 20 /home/student/zcat
+
+# Step 9: Re-run date command from history (simulating '!date')
+echo "[student@workstation ~]$ !date"
+date +%R
+
+# Append standard student command history to ~/.bash_history
+cat << 'EOF' >> ~/.bash_history
+lab start cli-review
+date
+date +%R
+file /home/student/zcat
+wc /home/student/zcat
+head /home/student/zcat
+tail /home/student/zcat
+!!
+tail -n 20 /home/student/zcat
+!date
+EOF
+
+# Grade the lab
+echo "[student@workstation ~]$ lab grade cli-review"
+lab grade cli-review
