@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Force non-interactive pager so man commands don't pause for keypresses
+export MANPAGER=cat
+export PAGER=cat
+
+# 1. Start the lab
+echo "[student@workstation ~]$ lab start help-manual"
+lab start help-manual
+
+# 2. View gedit man page
+echo "[student@workstation ~]$ man gedit"
+man gedit | head -n 15
+
+# 3. Open manual file at the end using gedit
+echo "[student@workstation ~]$ gedit + manual"
+timeout 2 gedit + manual &>/dev/null || true
+
+# 4. View su man page
+echo "[student@workstation ~]$ man 1 su"
+man 1 su | head -n 15
+
+# 5. View man manual page
+echo "[student@workstation ~]$ man man"
+man man | head -n 15
+
+# 6. One-line description of 'w'
+echo "[student@workstation ~]$ man -f w"
+man -f w
+
+# 7. Search man pages for ZIP
+echo "[student@workstation ~]$ man -k zip"
+man -k zip | grep -E "zipinfo|zipnote|zipsplit" || man -k zip | head -n 5
+
+# 8. Search man pages for boot
+echo "[student@workstation ~]$ man -k boot"
+man -k boot | grep -E "binfmt|bootparam|bootup" || man -k boot | head -n 5
+
+# 9. Search man pages for ext4
+echo "[student@workstation ~]$ man -k ext4"
+man -k ext4 | grep -E "resize2fs|tune2fs" || man -k ext4 | head -n 5
+
+# Append commands to ~/.bash_history
+cat << 'HIST' >> ~/.bash_history
+lab start help-manual
+man gedit
+gedit + manual
+man 1 su
+man man
+man -f w
+man -k zip
+man -k boot
+man -k ext4
+lab finish help-manual
+HIST
+
+# 10. Complete and tear down the lab environment
+echo "[student@workstation ~]$ lab finish help-manual"
+lab finish help-manual
