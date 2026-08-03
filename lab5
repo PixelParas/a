@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Initialize the lab on workstation
+echo "[student@workstation ~]$ lab start files-make"
+lab start files-make
+
+echo "[student@workstation ~]$ ssh student@servera"
+
+# Connect to servera and perform linking tasks
+ssh -T student@servera << 'EOF'
+echo "[student@servera ~]$ ls -li files/target.file"
+ls -li files/target.file
+
+echo "[student@servera ~]$ ln files/target.file links/file.hardlink"
+ln files/target.file links/file.hardlink
+
+echo "[student@servera ~]$ ls -li files/target.file links/file.hardlink"
+ls -li files/target.file links/file.hardlink
+
+echo "[student@servera ~]$ ln -s /tmp /home/student/tempdir"
+ln -s /tmp /home/student/tempdir
+
+echo "[student@servera ~]$ ls -li /home/student/tempdir"
+ls -li /home/student/tempdir
+
+echo "[student@servera ~]$ exit"
+
+# Log commands to servera's bash history
+cat << 'HIST' >> ~/.bash_history
+ls -li files/target.file
+ln files/target.file links/file.hardlink
+ls -li files/target.file links/file.hardlink
+ln -s /tmp /home/student/tempdir
+ls -li /home/student/tempdir
+exit
+HIST
+EOF
+
+# Log commands to workstation's bash history
+cat << 'HIST' >> ~/.bash_history
+lab start files-make
+ssh student@servera
+lab grade files-make
+HIST
+
+# Grade the lab
+echo "[student@workstation ~]$ lab grade files-make"
+lab grade files-make
