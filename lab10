@@ -1,0 +1,75 @@
+Guided Exercise: Change the Shell Environment
+Use shell variables and variable expansion to run commands, and set an environment variable to adjust the default editor for new shells.
+
+Outcomes
+
+
+Edit a user profile.
+
+Create a shell variable.
+
+Create an environment variable.
+
+
+As the student user on the workstation machine, use the lab command to prepare your system for this exercise.
+
+This command ensures that all required resources are available.
+
+[student@workstation ~]$ lab start edit-bashconfig
+Instructions
+
+Change the student user's PS1 shell variable to [\u@\h \t \w]$ (remember to put the value of PS1 in quotation marks and to include a trailing space after the dollar sign). This change adds the time to the prompt.
+
+Use the ssh command to log in to servera as the student user.
+
+[student@workstation ~]$ ssh student@servera
+...output omitted...
+[student@servera ~]$
+Use Vim to edit the ~/.bashrc configuration file.
+
+[student@servera ~]$ vim ~/.bashrc
+Add the PS1 shell variable and its value to the ~/.bashrc file. Set the value of the shell variable, including a trailing space at the end, inside quotation marks.
+
+...output omitted...
+export PATH
+PS1='[\u@\h \t \w]$ '
+Exit from servera and log in again by using the ssh command to update the command prompt, or execute the ~/.bashrc file by using the source ~/.bashrc command.
+
+[student@servera ~]$ exit
+logout
+Connection to servera closed.
+[student@workstation ~]$ ssh student@servera
+...output omitted...
+[student@servera 14:45:05 ~]$
+Assign a value to a local shell variable. Variable names can contain uppercase or lowercase letters, digits, and the underscore character. Retrieve the variable value.
+
+Create a variable called file with a value of tmp.zdkei083. The tmp.zdkei083 file exists in the student home directory.
+
+[student@servera 14:47:05 ~]$ file=tmp.zdkei083
+Retrieve the value of the file variable.
+
+[student@servera 14:48:35 ~]$ echo $file
+tmp.zdkei083
+Use the file variable name and the ls -l command to list the tmp.zdkei083 file. Use the rm command and the file variable name to delete the tmp.zdkei083 file. Verify that the file is deleted.
+
+[student@servera 14:59:07 ~]$ ls -l $file
+-rw-r--r--. 1 student student 0 Jan 23 14:59 tmp.zdkei083
+[student@servera 14:59:10 ~]$ rm $file
+[student@servera 14:59:15 ~]$ ls -l $file
+ls: cannot access 'tmp.zdkei083': No such file or directory
+Assign a value to the EDITOR variable. Use one command to assign the variable as an environment variable.
+
+[student@servera 14:46:40 ~]$ export EDITOR=vim
+[student@servera 14:46:55 ~]$ echo $EDITOR
+vim
+Return to the workstation system as the student user.
+
+[student@servera 14:47:11 ~]$ exit
+logout
+Connection to servera closed.
+[student@workstation ~]$
+Finish
+
+On the workstation machine, change to the student user home directory and use the lab command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.
+
+[student@workstation ~]$ lab finish edit-bashconfig
