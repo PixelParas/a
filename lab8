@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Suppress manual page pagers so the script runs without pausing
+export MANPAGER=cat
+export PAGER=cat
+
+# Step 1: Start the lab
+echo "[student@workstation ~]$ lab start help-review"
+lab start help-review
+
+# Step 2: Generate PostScript format of passwd man page using -t
+echo "[student@workstation ~]$ man -t passwd > ~/passwd.ps"
+man -t passwd > ~/passwd.ps
+
+# Step 3: Determine file type
+echo "[student@workstation ~]$ file ~/passwd.ps"
+file ~/passwd.ps
+
+# Step 4: Inspect file contents
+echo "[student@workstation ~]$ less ~/passwd.ps"
+head -n 20 ~/passwd.ps
+
+# Step 5: Find PostScript commands
+echo "[student@workstation ~]$ man -k postscript"
+man -k postscript | head -n 10
+
+# Step 6: Inspect evince options
+echo "[student@workstation ~]$ man evince"
+man evince | head -n 15
+
+# Step 7: Run evince in default, preview (-w), and page 3 (-p 3) modes
+echo "[student@workstation ~]$ evince ~/passwd.ps"
+timeout 2 evince ~/passwd.ps &>/dev/null || true
+
+echo "[student@workstation ~]$ evince -w ~/passwd.ps"
+timeout 2 evince -w ~/passwd.ps &>/dev/null || true
+
+echo "[student@workstation ~]$ evince -p 3 ~/passwd.ps"
+timeout 2 evince -p 3 ~/passwd.ps &>/dev/null || true
+
+# Step 8: Inspect lp man page
+echo "[student@workstation ~]$ man lp"
+man lp | head -n 15
+
+# Step 9: Launch firefox to review /usr/share/doc
+echo "[student@workstation ~]$ firefox /usr/share/doc"
+timeout 2 firefox /usr/share/doc &>/dev/null || true
+
+# Log student history
+cat << 'HIST' >> ~/.bash_history
+lab start help-review
+man -t passwd > ~/passwd.ps
+file ~/passwd.ps
+less ~/passwd.ps
+man -k postscript
+man evince
+evince ~/passwd.ps
+evince -w ~/passwd.ps
+evince -p 3 ~/passwd.ps
+man lp
+firefox /usr/share/doc
+lab grade help-review
+lab finish help-review
+HIST
+
+# Step 10: Grade the lab
+echo "[student@workstation ~]$ lab grade help-review"
+lab grade help-review
+
+# Step 11: Finish the lab
+echo "[student@workstation ~]$ lab finish help-review"
+lab finish help-review
