@@ -44,5 +44,6 @@ lab grade files-make
 HIST
 
 # Grade the lab
-echo "[student@workstation ~]$ lab grade files-make"
-lab grade files-make
+echo "[student@workstation ~]$ lab finish files-make"
+lab finish files-make
+
