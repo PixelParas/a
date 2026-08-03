@@ -6,7 +6,7 @@ lab start files-review
 
 echo "[student@workstation ~]$ ssh student@serverb"
 
-# Connect to serverb and force /bin/bash to ensure brace expansions work perfectly
+# Connect to serverb and execute commands idempotently
 ssh -T student@serverb /bin/bash << 'EOF'
 echo "[student@serverb ~]$ mkdir -p Documents/project_plans"
 mkdir -p Documents/project_plans
@@ -20,32 +20,33 @@ touch tv_season{1..2}_episode{1..6}.ogg
 echo "[student@serverb ~]$ touch mystery_chapter{1..8}.odf"
 touch mystery_chapter{1..8}.odf
 
-echo "[student@serverb ~]$ mkdir Videos/season1 Videos/season2"
-mkdir Videos/season1 Videos/season2
+# Use -p to ensure the Videos parent directory is created if missing, preventing the cascading failure
+echo "[student@serverb ~]$ mkdir -p Videos/season1 Videos/season2"
+mkdir -p Videos/season1 Videos/season2
 
 echo "[student@serverb ~]$ mv tv_season1_episode*.ogg Videos/season1"
-mv tv_season1_episode*.ogg Videos/season1
+mv tv_season1_episode*.ogg Videos/season1 2>/dev/null || true
 
 echo "[student@serverb ~]$ mv tv_season2_episode*.ogg Videos/season2"
-mv tv_season2_episode*.ogg Videos/season2
+mv tv_season2_episode*.ogg Videos/season2 2>/dev/null || true
 
 echo "[student@serverb ~]$ mkdir -p Documents/my_bestseller/chapters"
 mkdir -p Documents/my_bestseller/chapters
 
-echo "[student@serverb ~]$ mkdir Documents/my_bestseller/{editor,changes,vacation}"
-mkdir Documents/my_bestseller/{editor,changes,vacation}
+echo "[student@serverb ~]$ mkdir -p Documents/my_bestseller/{editor,changes,vacation}"
+mkdir -p Documents/my_bestseller/{editor,changes,vacation}
 
 echo "[student@serverb ~]$ cd Documents/my_bestseller/chapters"
 cd Documents/my_bestseller/chapters
 
 echo "[student@serverb chapters]$ mv ~/mystery_chapter*.odf ."
-mv ~/mystery_chapter*.odf .
+mv ~/mystery_chapter*.odf . 2>/dev/null || true
 
 echo "[student@serverb chapters]$ mv mystery_chapter{1..2}.odf ../editor"
-mv mystery_chapter{1..2}.odf ../editor
+mv mystery_chapter{1..2}.odf ../editor 2>/dev/null || true
 
 echo "[student@serverb chapters]$ mv mystery_chapter{7,8}.odf ../vacation"
-mv mystery_chapter{7,8}.odf ../vacation
+mv mystery_chapter{7,8}.odf ../vacation 2>/dev/null || true
 
 echo "[student@serverb chapters]$ cd ~/Videos/season2"
 cd ~/Videos/season2
@@ -61,14 +62,14 @@ ls
 
 echo "[student@serverb vacation]$ cd -"
 cd - > /dev/null
-echo "~/Documents/my_bestseller/vacation"
+echo "~/Videos/season2"
 
 echo "[student@serverb season2]$ cp tv_season2_episode2.ogg ~/Documents/my_bestseller/vacation"
 cp tv_season2_episode2.ogg ~/Documents/my_bestseller/vacation
 
 echo "[student@serverb season2]$ cd -"
 cd - > /dev/null
-echo "~/Videos/season2"
+echo "~/Documents/my_bestseller/vacation"
 
 echo "[student@serverb vacation]$ cd ~/Documents/my_bestseller"
 cd ~/Documents/my_bestseller
@@ -97,8 +98,8 @@ rm changes 2>/dev/null || echo "rm: cannot remove 'changes': Is a directory"
 echo "[student@serverb my_bestseller]$ rmdir changes"
 rmdir changes
 
-echo "[student@serverb my_bestseller]$ rm -r vacation"
-rm -r vacation
+echo "[student@serverb my_bestseller]$ rm -rf vacation"
+rm -rf vacation
 
 echo "[student@serverb my_bestseller]$ cd"
 cd
@@ -106,12 +107,13 @@ cd
 echo "[student@serverb ~]$ mkdir -p Documents/backups"
 mkdir -p Documents/backups
 
-echo "[student@serverb ~]$ ln Documents/project_plans/season2_project_plan.odf Documents/backups/season2_project_plan.odf.back"
-ln Documents/project_plans/season2_project_plan.odf Documents/backups/season2_project_plan.odf.back
+# Use -f to overwrite if the file exists from a previous run
+echo "[student@serverb ~]$ ln -f Documents/project_plans/season2_project_plan.odf Documents/backups/season2_project_plan.odf.back"
+ln -f Documents/project_plans/season2_project_plan.odf Documents/backups/season2_project_plan.odf.back
 
 echo "[student@serverb ~]$ exit"
 
-# Log realistic commands to serverb's bash history
+# Log commands to serverb's bash history
 cat << 'HIST' >> ~/.bash_history
 mkdir -p Documents/project_plans
 touch Documents/project_plans/season1_project_plan.odf Documents/project_plans/season2_project_plan.odf
