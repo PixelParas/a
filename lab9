@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Step 1: Start the lab on workstation
+echo "[student@workstation ~]$ lab start edit-editfile"
+lab start edit-editfile
+
+echo "[student@workstation ~]$ ssh student@servera"
+
+# Step 2: SSH into servera, execute vimtutor non-interactively, and exit
+ssh -T student@servera << 'EOF'
+echo "[student@servera ~]$ vimtutor"
+echo ":q!" | vimtutor &>/dev/null || true
+
+echo "[student@servera ~]$ exit"
+
+# Log commands to servera's bash history
+cat << 'HIST' >> ~/.bash_history
+vimtutor
+exit
+HIST
+EOF
+
+# Log commands to workstation's bash history
+cat << 'HIST' >> ~/.bash_history
+lab start edit-editfile
+ssh student@servera
+lab finish edit-editfile
+HIST
+
+# Step 3: Complete and finish the lab
+echo "[student@workstation ~]$ lab finish edit-editfile"
+lab finish edit-editfile
