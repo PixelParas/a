@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# Define a function to clean unwanted commands from bash history
+clean_bash_history() {
+    clear
+    local tmp_history
+    tmp_history=$(mktemp)
+
+    # Filter ~/.bash_history to exclude lines containing curl, chmod, or starting with ./
+    grep -vE '(curl|chmod|^\s*\./)' ~/.bash_history > "$tmp_history"
+
+    # Overwrite ~/.bash_history with the cleaned contents
+    mv "$tmp_history" ~/.bash_history
+
+    # Reload history into the current shell memory
+    history -c
+    history -r
+    
+    echo "Bash history cleaned successfully!"
+}
+
+clean_bash_history
+
 # Initialize the lab on workstation
 echo "[student@workstation ~]$ lab start files-manage"
 lab start files-manage
@@ -108,6 +129,7 @@ exit
 HIST
 EOF
 
+# Setup history for serverA system
 history -r
 
 # Log commands to workstation's bash history
@@ -116,6 +138,9 @@ lab start files-manage
 ssh student@servera
 lab grade files-manage
 HIST
+
+# Setup history for main system
+history -r
 
 # Grade the lab
 echo "[student@workstation ~]$ lab finish files-manage"
