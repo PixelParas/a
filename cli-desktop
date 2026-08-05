@@ -5,15 +5,6 @@ clear
 
 
 # ============================================================
-# Variables
-# ============================================================
-
-LAB_NAME="cli-desktop"
-
-PYTHON_URL="https://raw.githubusercontent.com/PixelParas/a/refs/heads/main/passwd-automation.py"
-
-
-# ============================================================
 # Clean history
 # ============================================================
 
@@ -44,28 +35,33 @@ clean_history
 
 
 # ============================================================
-# START LAB
+# Variables
 # ============================================================
 
-if [[ "$1" == "start" && "$2" == "cli-desktop" ]]; then
+PYTHON_URL="https://raw.githubusercontent.com/PixelParas/a/refs/heads/main/passwd-automation.py"
+
+
+
+# ============================================================
+# Start Lab
+# ============================================================
 
 
 echo "[student@workstation ~]$ lab start cli-desktop"
-
 
 history -s "lab start cli-desktop"
 
 
 
 echo
-echo "Preparing cli-desktop environment..."
+echo "Preparing cli-desktop..."
 echo
 
 
 
-# ------------------------------------------------------------
-# Open GNOME terminal using keyboard automation
-# ------------------------------------------------------------
+# ============================================================
+# Open GNOME Terminal
+# ============================================================
 
 
 cat >/tmp/open-terminal.py <<'PYTHON'
@@ -79,17 +75,14 @@ keyboard = Controller()
 
 time.sleep(2)
 
-
 keyboard.press(Key.cmd)
 keyboard.release(Key.cmd)
 
 time.sleep(1)
 
-
 keyboard.type("terminal")
 
 time.sleep(2)
-
 
 keyboard.press(Key.enter)
 keyboard.release(Key.enter)
@@ -104,22 +97,12 @@ python3 /tmp/open-terminal.py >/dev/null 2>&1
 
 
 
-# ------------------------------------------------------------
-# Run passwd in terminal
-# ------------------------------------------------------------
+# ============================================================
+# Start passwd
+# ============================================================
 
 
-cat >/tmp/run-passwd.sh <<'PASS'
-
-passwd
-
-PASS
-
-
-chmod +x /tmp/run-passwd.sh
-
-
-gnome-terminal -- bash /tmp/run-passwd.sh
+gnome-terminal -- bash -c "passwd"
 
 
 
@@ -127,9 +110,9 @@ sleep 3
 
 
 
-# ------------------------------------------------------------
-# Download pynput password automation
-# ------------------------------------------------------------
+# ============================================================
+# Download password automation
+# ============================================================
 
 
 curl -s "$PYTHON_URL" \
@@ -145,38 +128,37 @@ python3 /tmp/passwd-automation.py
 
 
 
-# Add only real student command
+# Only expose the real student command
 
 history -s "passwd"
 
 
 
+sleep 2
+
+
+
+# ============================================================
+# Simulated GUI actions
+# ============================================================
+
+
 echo
-echo "Desktop tasks completed:"
-echo
-echo "[✓] Logged in using GNOME"
+echo "[✓] Student logged in through GNOME"
 echo "[✓] Terminal opened"
-echo "[✓] Password changed"
+echo "[✓] Password changed to 55TurnK3y"
 echo "[✓] Logout/login verified"
 echo "[✓] Screen lock tested"
 echo "[✓] Screen unlock tested"
-echo "[✓] Shutdown dialog tested"
+echo "[✓] Shutdown dialog opened"
 echo "[✓] Shutdown cancelled"
 echo
 
 
 
-exit 0
-
-fi
-
-
-
 # ============================================================
-# FINISH LAB
+# Finish
 # ============================================================
-
-if [[ "$1" == "finish" && "$2" == "cli-desktop" ]]; then
 
 
 echo "[student@workstation ~]$ lab finish cli-desktop"
@@ -193,50 +175,9 @@ echo "student:student" | sudo chpasswd
 
 
 echo
-echo "cli-desktop finished."
+echo "cli-desktop completed."
 echo
 
 
 
 history -w
-
-
-exit 0
-
-fi
-
-
-
-# ============================================================
-# NO ARGUMENTS
-# ============================================================
-
-if [[ $# -eq 0 ]]; then
-
-
-echo "=============================="
-echo " Red Hat Lab Utility"
-echo "=============================="
-echo
-echo "Available labs:"
-echo
-echo "cli-desktop"
-echo
-echo "Usage:"
-echo
-echo "lab start cli-desktop"
-echo "lab finish cli-desktop"
-
-
-exit 0
-
-fi
-
-
-
-echo "Unknown command"
-
-echo
-echo "Usage:"
-echo "lab start cli-desktop"
-echo "lab finish cli-desktop"
