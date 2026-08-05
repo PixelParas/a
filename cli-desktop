@@ -52,30 +52,12 @@ lab start cli-desktop
 curl -sSL "$PYTHON_URL" | python3
 
 history -s "passwd"
-sleep 2
-
 # ============================================================
 # Finish
 # ============================================================
 
-
 echo "[student@workstation ~]$ lab finish cli-desktop"
-
-
 history -s "lab finish cli-desktop"
-
-
-
-# Reset password
-
-echo "student:student" | sudo chpasswd
-
-
-
-echo
-echo "cli-desktop completed."
-echo
-
-
+lab finish cli-desktop
 
 history -w
