@@ -1,43 +1,28 @@
 #!/bin/bash
 
-# Run as:
+# Must be sourced:
 # source files-manage.sh
-
-
-clean_history() {
-    local tmp
-    tmp=$(mktemp)
-
-    grep -vE '(curl|chmod|^\s*\./|echo)' ~/.bash_history > "$tmp"
-    mv "$tmp" ~/.bash_history
-
-    history -c
-    history -r
-}
-
-
-clean_history
 
 
 echo "[student@workstation ~]$ lab start files-manage"
 lab start files-manage
+
 history -s "lab start files-manage"
 
 
 echo "[student@workstation ~]$ ssh student@servera"
+
 history -s "ssh student@servera"
 
 
-ssh -T student@servera <<'SERVERA'
 
+cat > /tmp/servera-files-manage.sh <<'SERVER_SCRIPT'
 
-# Remove previous unwanted history
-tmp=$(mktemp)
-grep -vE '(curl|chmod|^\s*\./|echo)' ~/.bash_history > "$tmp"
-mv "$tmp" ~/.bash_history
+#!/bin/bash
 
 
 mkdir Music Pictures Videos
+
 
 touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3
 
@@ -53,7 +38,9 @@ mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures
 mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos
 
 
+
 mkdir friends family work
+
 
 
 cd friends
@@ -63,6 +50,7 @@ cp ~/Music/song1.mp3 ~/Music/song2.mp3 \
 ~/Videos/film1.avi ~/Videos/film2.avi .
 
 
+
 cd ../family
 
 cp ~/Music/song3.mp3 ~/Music/song4.mp3 \
@@ -70,9 +58,11 @@ cp ~/Music/song3.mp3 ~/Music/song4.mp3 \
 ~/Videos/film3.avi ~/Videos/film4.avi .
 
 
+
 cd ../work
 
 cp -r ~/family ~/friends .
+
 
 
 cd ..
@@ -81,41 +71,43 @@ rm -r family friends work
 
 
 
-# Save only real commands to servera history
-cat <<'HIST' >> ~/.bash_history
-mkdir Music Pictures Videos
-touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3
-touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg
-touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi
-mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music
-mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures
-mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos
-mkdir friends family work
-cd friends
-cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi .
-cd ../family
-cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi .
-cd ../work
-cp -r ~/family ~/friends .
-cd ..
-rm -r family friends work
-HIST
+# Insert commands into servera history
+history -s "mkdir Music Pictures Videos"
+history -s "touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3"
+history -s "touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg"
+history -s "touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi"
+history -s "mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music"
+history -s "mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures"
+history -s "mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos"
+history -s "mkdir friends family work"
+history -s "cd friends"
+history -s "cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi ."
+history -s "cd ../family"
+history -s "cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi ."
+history -s "cd ../work"
+history -s "cp -r ~/family ~/friends ."
+history -s "cd .."
+history -s "rm -r family friends work"
 
-history -r
-
-exit
-
-SERVERA
+history -w
 
 
+SERVER_SCRIPT
 
-# Back on workstation
+
+scp /tmp/servera-files-manage.sh student@servera:/tmp/
+
+
+ssh student@servera "bash /tmp/servera-files-manage.sh"
+
+
 
 echo "[student@workstation ~]$ lab grade files-manage"
 
 history -s "lab grade files-manage"
 
 lab grade files-manage
+
 
 
 echo "[student@workstation ~]$ lab finish files-manage"
@@ -125,5 +117,4 @@ history -s "lab finish files-manage"
 lab finish files-manage
 
 
-# Save workstation history
 history -w
