@@ -124,15 +124,6 @@ scp /tmp/servera-files-manage.sh student@servera:/tmp/
 ssh student@servera "bash /tmp/servera-files-manage.sh"
 
 
-
-echo "[student@workstation ~]$ lab grade files-manage"
-
-history -s "lab grade files-manage"
-
-lab grade files-manage
-
-
-
 echo "[student@workstation ~]$ lab finish files-manage"
 
 history -s "lab finish files-manage"
