@@ -33,8 +33,6 @@ clean_history() {
 
 clean_history
 
-
-
 # ============================================================
 # Variables
 # ============================================================
@@ -51,111 +49,12 @@ PYTHON_URL="https://raw.githubusercontent.com/PixelParas/a/refs/heads/main/passw
 echo "[student@workstation ~]$ lab start cli-desktop"
 
 history -s "lab start cli-desktop"
+lab start cli-desktop
 
-
-
-echo
-echo "Preparing cli-desktop..."
-echo
-
-
-
-# ============================================================
-# Open GNOME Terminal
-# ============================================================
-
-
-cat >/tmp/open-terminal.py <<'PYTHON'
-
-from pynput.keyboard import Controller, Key
-import time
-
-
-keyboard = Controller()
-
-
-time.sleep(2)
-
-keyboard.press(Key.cmd)
-keyboard.release(Key.cmd)
-
-time.sleep(1)
-
-keyboard.type("terminal")
-
-time.sleep(2)
-
-keyboard.press(Key.enter)
-keyboard.release(Key.enter)
-
-time.sleep(3)
-
-PYTHON
-
-
-
-python3 /tmp/open-terminal.py >/dev/null 2>&1
-
-
-
-# ============================================================
-# Start passwd
-# ============================================================
-
-
-gnome-terminal -- bash -c "passwd"
-
-
-
-sleep 3
-
-
-
-# ============================================================
-# Download password automation
-# ============================================================
-
-
-curl -s "$PYTHON_URL" \
--o /tmp/passwd-automation.py
-
-
-
-chmod +x /tmp/passwd-automation.py
-
-
-
-python3 /tmp/passwd-automation.py
-
-
-
-# Only expose the real student command
+curl -sSL PYTHON_URL | python3
 
 history -s "passwd"
-
-
-
 sleep 2
-
-
-
-# ============================================================
-# Simulated GUI actions
-# ============================================================
-
-
-echo
-echo "[✓] Student logged in through GNOME"
-echo "[✓] Terminal opened"
-echo "[✓] Password changed to 55TurnK3y"
-echo "[✓] Logout/login verified"
-echo "[✓] Screen lock tested"
-echo "[✓] Screen unlock tested"
-echo "[✓] Shutdown dialog opened"
-echo "[✓] Shutdown cancelled"
-echo
-
-
 
 # ============================================================
 # Finish
