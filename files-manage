@@ -108,6 +108,8 @@ exit
 HIST
 EOF
 
+history -r
+
 # Log commands to workstation's bash history
 cat << 'HIST' >> ~/.bash_history
 lab start files-manage
