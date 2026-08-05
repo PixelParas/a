@@ -1,89 +1,129 @@
 #!/bin/bash
 
-# This script must be sourced:
+# Run as:
 # source files-manage.sh
 
 
-clean_bash_history() {
-    clear
-    local tmp_history
-    tmp_history=$(mktemp)
+clean_history() {
+    local tmp
+    tmp=$(mktemp)
 
-    grep -vE '(curl|chmod|^\s*\./|echo)' ~/.bash_history > "$tmp_history"
-    mv "$tmp_history" ~/.bash_history
+    grep -vE '(curl|chmod|^\s*\./|echo)' ~/.bash_history > "$tmp"
+    mv "$tmp" ~/.bash_history
 
     history -c
     history -r
 }
 
-clean_bash_history
+
+clean_history
 
 
-run_cmd() {
-    # Execute command
-    eval "$1"
-
-    # Add only the real command to history
-    history -s "$1"
-}
+echo "[student@workstation ~]$ lab start files-manage"
+lab start files-manage
+history -s "lab start files-manage"
 
 
-clear
+echo "[student@workstation ~]$ ssh student@servera"
+history -s "ssh student@servera"
 
 
-run_cmd "lab start files-manage"
+ssh -T student@servera <<'SERVERA'
 
 
-# SSH command is executed normally
-run_cmd "ssh student@servera"
+# Remove previous unwanted history
+tmp=$(mktemp)
+grep -vE '(curl|chmod|^\s*\./|echo)' ~/.bash_history > "$tmp"
+mv "$tmp" ~/.bash_history
 
 
-# Server operations
-run_cmd "mkdir Music Pictures Videos"
+mkdir Music Pictures Videos
 
-run_cmd "touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3"
+touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3
 
-run_cmd "touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg"
+touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg
 
-run_cmd "touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi"
-
-run_cmd "mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music"
-
-run_cmd "mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures"
-
-run_cmd "mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos"
+touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi
 
 
-run_cmd "mkdir friends family work"
+mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music
+
+mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures
+
+mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos
 
 
-run_cmd "cd friends"
-
-run_cmd "cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi ."
+mkdir friends family work
 
 
-run_cmd "cd ../family"
+cd friends
 
-run_cmd "cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi ."
-
-
-run_cmd "cd ../work"
-
-run_cmd "cp -r ~/family ~/friends ."
+cp ~/Music/song1.mp3 ~/Music/song2.mp3 \
+~/Pictures/snap1.jpg ~/Pictures/snap2.jpg \
+~/Videos/film1.avi ~/Videos/film2.avi .
 
 
-run_cmd "cd .."
+cd ../family
 
-run_cmd "rm -r family friends work"
-
-
-# Verify lab
-run_cmd "lab grade files-manage"
+cp ~/Music/song3.mp3 ~/Music/song4.mp3 \
+~/Pictures/snap3.jpg ~/Pictures/snap4.jpg \
+~/Videos/film3.avi ~/Videos/film4.avi .
 
 
-# Finish lab
-run_cmd "lab finish files-manage"
+cd ../work
+
+cp -r ~/family ~/friends .
 
 
-# Save history permanently
+cd ..
+
+rm -r family friends work
+
+
+
+# Save only real commands to servera history
+cat <<'HIST' >> ~/.bash_history
+mkdir Music Pictures Videos
+touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3
+touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg
+touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi
+mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music
+mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures
+mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos
+mkdir friends family work
+cd friends
+cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi .
+cd ../family
+cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi .
+cd ../work
+cp -r ~/family ~/friends .
+cd ..
+rm -r family friends work
+HIST
+
+history -r
+
+exit
+
+SERVERA
+
+
+
+# Back on workstation
+
+echo "[student@workstation ~]$ lab grade files-manage"
+
+history -s "lab grade files-manage"
+
+lab grade files-manage
+
+
+echo "[student@workstation ~]$ lab finish files-manage"
+
+history -s "lab finish files-manage"
+
+lab finish files-manage
+
+
+# Save workstation history
 history -w
