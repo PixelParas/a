@@ -49,7 +49,7 @@ echo "[student@workstation ~]$ lab start cli-desktop"
 history -s "lab start cli-desktop"
 lab start cli-desktop
 
-curl -sSL PYTHON_URL | python3
+curl -sSL "$PYTHON_URL" | python3
 
 history -s "passwd"
 sleep 2
