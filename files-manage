@@ -3,6 +3,24 @@
 # Must be sourced:
 # source files-manage.sh
 
+clean_history() {
+    clear
+    local tmp
+    tmp=$(mktemp)
+
+    history -w
+
+    grep -vEi \
+    '(curl|chmod|source|bash /tmp|scp /tmp|/tmp/servera|history|clean_history)' \
+    ~/.bash_history > "$tmp"
+
+    mv "$tmp" ~/.bash_history
+
+    history -c
+    history -r
+}
+
+clean_history
 
 echo "[student@workstation ~]$ lab start files-manage"
 lab start files-manage
@@ -70,25 +88,30 @@ cd ..
 rm -r family friends work
 
 
+# Write clean student history without exposing script execution
+cat >> ~/.bash_history <<'HIST'
 
-# Insert commands into servera history
-history -s "mkdir Music Pictures Videos"
-history -s "touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3"
-history -s "touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg"
-history -s "touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi"
-history -s "mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music"
-history -s "mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures"
-history -s "mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos"
-history -s "mkdir friends family work"
-history -s "cd friends"
-history -s "cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi ."
-history -s "cd ../family"
-history -s "cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi ."
-history -s "cd ../work"
-history -s "cp -r ~/family ~/friends ."
-history -s "cd .."
-history -s "rm -r family friends work"
+mkdir Music Pictures Videos
+touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3
+touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg
+touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi
+mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music
+mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures
+mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos
+mkdir friends family work
+cd friends
+cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi .
+cd ../family
+cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi .
+cd ../work
+cp -r ~/family ~/friends .
+cd ..
+rm -r family friends work
 
+HIST
+
+history -c
+history -r
 history -w
 
 
