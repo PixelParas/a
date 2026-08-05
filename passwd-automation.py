@@ -1,29 +1,21 @@
 #!/usr/bin/env python3
 
-import time
-from pynput.keyboard import Controller, Key
+import pexpect
 
-keyboard = Controller()
+child = pexpect.spawn("passwd", encoding="utf-8")
 
+child.expect("Current password:")
+child.sendline("student")
 
-def type_text(text):
-    keyboard.type(text)
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter)
+child.expect("New password:")
+child.sendline("55TurnK3y")
 
+child.expect("Retype new password:")
+child.sendline("55TurnK3y")
 
-# Give the terminal/passwd prompt time to appear
-time.sleep(2)
+child.expect(pexpect.EOF)
 
-# Current password
-type_text("student")
-
-time.sleep(1)
-
-# New password
-type_text("55TurnK3y")
-
-time.sleep(1)
-
-# Retype new password
-type_text("55TurnK3y")
+if child.exitstatus == 0:
+    print("Password changed successfully.")
+else:
+    print(child.before)
