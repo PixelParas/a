@@ -14,6 +14,3 @@ child.expect_exact("Retype new password:")
 child.sendline("55TurnK3y")
 
 child.expect(pexpect.EOF)
-
-print("exitstatus =", child.exitstatus)
-print("before =", repr(child.before))
