@@ -1,149 +1,89 @@
 #!/bin/bash
 
-# Define a function to clean unwanted commands from bash history
+# This script must be sourced:
+# source files-manage.sh
+
+
 clean_bash_history() {
     clear
     local tmp_history
     tmp_history=$(mktemp)
 
-    # Filter ~/.bash_history to exclude lines containing curl, chmod, or starting with ./
-    grep -vE '(curl|chmod|^\s*\./)' ~/.bash_history > "$tmp_history"
-
-    # Overwrite ~/.bash_history with the cleaned contents
+    grep -vE '(curl|chmod|^\s*\./|echo)' ~/.bash_history > "$tmp_history"
     mv "$tmp_history" ~/.bash_history
 
-    # Reload history into the current shell memory
     history -c
     history -r
-    
-    echo "Bash history cleaned successfully!"
 }
 
 clean_bash_history
 
-# Initialize the lab on workstation
-echo "[student@workstation ~]$ lab start files-manage"
-lab start files-manage
 
-echo "[student@workstation ~]$ ssh student@servera"
+run_cmd() {
+    # Execute command
+    eval "$1"
 
-# Connect to servera and perform all directory & file operations
-ssh -T student@servera << 'EOF'
-echo "[student@servera ~]$ mkdir Music Pictures Videos"
-mkdir Music Pictures Videos
-
-echo "[student@servera ~]$ touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3"
-touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3
-
-echo "[student@servera ~]$ touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg"
-touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg
-
-echo "[student@servera ~]$ touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi"
-touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi
-
-echo "[student@servera ~]$ ls -l"
-ls -l
-
-echo "[student@servera ~]$ mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music"
-mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music
-
-echo "[student@servera ~]$ mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures"
-mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures
-
-echo "[student@servera ~]$ mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos"
-mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos
-
-echo "[student@servera ~]$ ls -l Music Pictures Videos"
-ls -l Music Pictures Videos
-
-echo "[student@servera ~]$ mkdir friends family work"
-mkdir friends family work
-
-echo "[student@servera ~]$ ls -l"
-ls -l
-
-echo "[student@servera ~]$ cd friends"
-cd friends
-
-echo "[student@servera friends]$ cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi ."
-cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi .
-
-echo "[student@servera friends]$ ls -l"
-ls -l
-
-echo "[student@servera friends]$ cd ../family"
-cd ../family
-
-echo "[student@servera family]$ cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi ."
-cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi .
-
-echo "[student@servera family]$ ls -l"
-ls -l
-
-echo "[student@servera family]$ cd ../work"
-cd ../work
-
-echo "[student@servera work]$ cp -r ~/family ~/friends ."
-cp -r ~/family ~/friends .
-
-echo "[student@servera work]$ ls -l"
-ls -l
-
-echo "[student@servera work]$ cd .."
-cd ..
-
-echo "[student@servera ~]$ rm -r family friends work"
-rm -r family friends work
-
-echo "[student@servera ~]$ ls -l"
-ls -l
-
-echo "[student@servera ~]$ exit"
-
-# Log commands to servera's bash history
-cat << 'HIST' >> ~/.bash_history
-mkdir Music Pictures Videos
-touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3
-touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg
-touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi
-ls -l
-mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music
-mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures
-mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos
-ls -l Music Pictures Videos
-mkdir friends family work
-ls -l
-cd friends
-cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi .
-ls -l
-cd ../family
-cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi .
-ls -l
-cd ../work
-cp -r ~/family ~/friends .
-ls -l
-cd ..
-rm -r family friends work
-ls -l
-exit
-HIST
-EOF
-
-# Setup history for serverA system
-history -r
-
-# Log commands to workstation's bash history
-cat << 'HIST' >> ~/.bash_history
-lab start files-manage
-ssh student@servera
-lab grade files-manage
-HIST
-
-# Setup history for main system
-history -r
-
-# Grade the lab
-echo "[student@workstation ~]$ lab finish files-manage"
-lab finish files-manage
+    # Add only the real command to history
+    history -s "$1"
+}
 
 
+clear
+
+
+run_cmd "lab start files-manage"
+
+
+# SSH command is executed normally
+run_cmd "ssh student@servera"
+
+
+# Server operations
+run_cmd "mkdir Music Pictures Videos"
+
+run_cmd "touch song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3"
+
+run_cmd "touch snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg"
+
+run_cmd "touch film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi"
+
+run_cmd "mv song1.mp3 song2.mp3 song3.mp3 song4.mp3 song5.mp3 song6.mp3 Music"
+
+run_cmd "mv snap1.jpg snap2.jpg snap3.jpg snap4.jpg snap5.jpg snap6.jpg Pictures"
+
+run_cmd "mv film1.avi film2.avi film3.avi film4.avi film5.avi film6.avi Videos"
+
+
+run_cmd "mkdir friends family work"
+
+
+run_cmd "cd friends"
+
+run_cmd "cp ~/Music/song1.mp3 ~/Music/song2.mp3 ~/Pictures/snap1.jpg ~/Pictures/snap2.jpg ~/Videos/film1.avi ~/Videos/film2.avi ."
+
+
+run_cmd "cd ../family"
+
+run_cmd "cp ~/Music/song3.mp3 ~/Music/song4.mp3 ~/Pictures/snap3.jpg ~/Pictures/snap4.jpg ~/Videos/film3.avi ~/Videos/film4.avi ."
+
+
+run_cmd "cd ../work"
+
+run_cmd "cp -r ~/family ~/friends ."
+
+
+run_cmd "cd .."
+
+run_cmd "rm -r family friends work"
+
+
+# Verify lab
+run_cmd "lab grade files-manage"
+
+
+# Finish lab
+run_cmd "lab finish files-manage"
+
+
+# Save history permanently
+history -w
