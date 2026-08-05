@@ -1,0 +1,66 @@
+#!/bin/bash
+
+LAB_NAME="files-manage"
+LAB_VERSION="1.0"
+LAB_STATUS="ready"
+
+case "$1" in
+
+    "")
+        echo "=========================="
+        echo " Lab Utility"
+        echo "=========================="
+        echo
+        echo "Available variables:"
+        echo
+        echo "LAB_NAME=$LAB_NAME"
+        echo "LAB_VERSION=$LAB_VERSION"
+        echo "LAB_STATUS=$LAB_STATUS"
+        echo
+        echo "Usage:"
+        echo "  lab start <lab-name>"
+        echo "  lab grade <lab-name>"
+        echo "  lab finish <lab-name>"
+        ;;
+
+
+    start)
+        if [ "$2" == "$LAB_NAME" ]; then
+            echo "Starting $LAB_NAME"
+            # start code here
+        else
+            echo "Unknown lab: $2"
+        fi
+        ;;
+
+
+    grade)
+        if [ "$2" == "$LAB_NAME" ]; then
+            echo "Grading $LAB_NAME"
+            # grade code here
+        else
+            echo "Unknown lab: $2"
+        fi
+        ;;
+
+
+    finish)
+        if [ "$2" == "$LAB_NAME" ]; then
+            echo "Finishing $LAB_NAME"
+            # finish code here
+        else
+            echo "Unknown lab: $2"
+        fi
+        ;;
+
+
+    *)
+        echo "Unknown option: $1"
+        echo
+        echo "Available commands:"
+        echo "  start"
+        echo "  grade"
+        echo "  finish"
+        ;;
+
+esac
