@@ -1,59 +1,87 @@
 #!/bin/bash
 
-# Force non-interactive pager so man commands don't pause for keypresses
-export MANPAGER=cat
-export PAGER=cat
+clear
 
-# 1. Start the lab
+# ============================================================
+# Clean history
+# ============================================================
+
+clean_history() {
+    history -w
+
+    local tmp
+    tmp=$(mktemp)
+
+    grep -vEi \
+    '(curl|chmod|source|python|pynput|passwd-automation|cli-desktop\.sh|help-manual\.sh|history)' \
+    ~/.bash_history > "$tmp"
+
+    mv "$tmp" ~/.bash_history
+
+    history -c
+    history -r
+}
+
+clean_history
+
+# ============================================================
+# Start Lab
+# ============================================================
+
 echo "[student@workstation ~]$ lab start help-manual"
+history -s "lab start help-manual"
 lab start help-manual
 
-# 2. View gedit man page
+# ============================================================
+# Lab Instructions Execution
+# ============================================================
+
+# Step 1: View gedit man page
 echo "[student@workstation ~]$ man gedit"
-man gedit | head -n 15
+history -s "man gedit"
+MANPAGER=cat man gedit | head -n 25
 
-# 3. Open manual file at the end using gedit
+# Step 2: Open manual file with gedit at the end of the line
 echo "[student@workstation ~]$ gedit + manual"
-timeout 2 gedit + manual &>/dev/null || true
+history -s "gedit + manual"
+timeout 2 gedit + manual >/dev/null 2>&1 || true
 
-# 4. View su man page
+# Step 3: View su(1) man page
 echo "[student@workstation ~]$ man 1 su"
-man 1 su | head -n 15
+history -s "man 1 su"
+MANPAGER=cat man 1 su | head -n 25
 
-# 5. View man manual page
+# Step 4: View man(1) man page
 echo "[student@workstation ~]$ man man"
-man man | head -n 15
+history -s "man man"
+MANPAGER=cat man man | head -n 25
 
-# 6. One-line description of 'w'
+# Step 5: Display one-line description of the w command
 echo "[student@workstation ~]$ man -f w"
+history -s "man -f w"
 man -f w
 
-# 7. Search man pages for ZIP
+# Step 6: List man page for ZIP archive information
 echo "[student@workstation ~]$ man -k zip"
-man -k zip | grep -E "zipinfo|zipnote|zipsplit" || man -k zip | head -n 5
-
-# 8. Search man pages for boot
-echo "[student@workstation ~]$ man -k boot"
-man -k boot | grep -E "binfmt|bootparam|bootup" || man -k boot | head -n 5
-
-# 9. Search man pages for ext4
-echo "[student@workstation ~]$ man -k ext4"
-man -k ext4 | grep -E "resize2fs|tune2fs" || man -k ext4 | head -n 5
-
-# Append commands to ~/.bash_history
-cat << 'HIST' >> ~/.bash_history
-lab start help-manual
-man gedit
-gedit + manual
-man 1 su
-man man
-man -f w
+history -s "man -k zip"
 man -k zip
-man -k boot
-man -k ext4
-lab finish help-manual
-HIST
 
-# 10. Complete and tear down the lab environment
+# Step 7: List man page for kernel boot parameters
+echo "[student@workstation ~]$ man -k boot"
+history -s "man -k boot"
+man -k boot
+
+# Step 8: Find command to tune ext4 file-system parameters
+echo "[student@workstation ~]$ man -k ext4"
+history -s "man -k ext4"
+man -k ext4
+
+# ============================================================
+# Finish Lab
+# ============================================================
+
 echo "[student@workstation ~]$ lab finish help-manual"
+history -s "lab finish help-manual"
 lab finish help-manual
+
+history -w

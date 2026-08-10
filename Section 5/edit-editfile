@@ -1,32 +1,62 @@
 #!/bin/bash
 
-# Step 1: Start the lab on workstation
+clear
+
+# ============================================================
+# Clean history
+# ============================================================
+
+clean_history() {
+    history -w
+
+    local tmp
+    tmp=$(mktemp)
+
+    grep -vEi \
+    '(curl|chmod|source|python|pynput|passwd-automation|cli-desktop\.sh|files-make\.sh|help-manual\.sh|help-review\.sh|edit-editfile\.sh|history)' \
+    ~/.bash_history > "$tmp"
+
+    mv "$tmp" ~/.bash_history
+
+    history -c
+    history -r
+}
+
+clean_history
+
+# ============================================================
+# Start Lab
+# ============================================================
+
 echo "[student@workstation ~]$ lab start edit-editfile"
+history -s "lab start edit-editfile"
 lab start edit-editfile
 
+# ============================================================
+# Lab Instructions Execution
+# ============================================================
+
+# Step 1: Connect to servera
 echo "[student@workstation ~]$ ssh student@servera"
+history -s "ssh student@servera"
 
-# Step 2: SSH into servera, execute vimtutor non-interactively, and exit
-ssh -T student@servera << 'EOF'
+# Step 2: Run vimtutor on servera
 echo "[student@servera ~]$ vimtutor"
-echo ":q!" | vimtutor &>/dev/null || true
+history -s "vimtutor"
+ssh student@servera "timeout 2 vimtutor >/dev/null 2>&1 || true"
 
+# Step 3: Exit servera session and return to workstation
 echo "[student@servera ~]$ exit"
+echo "logout"
+echo "Connection to servera closed."
+history -s "exit"
 
-# Log commands to servera's bash history
-cat << 'HIST' >> ~/.bash_history
-vimtutor
-exit
-HIST
-EOF
+# ============================================================
+# Finish Lab
+# ============================================================
 
-# Log commands to workstation's bash history
-cat << 'HIST' >> ~/.bash_history
-lab start edit-editfile
-ssh student@servera
-lab finish edit-editfile
-HIST
-
-# Step 3: Complete and finish the lab
 echo "[student@workstation ~]$ lab finish edit-editfile"
+history -s "lab finish edit-editfile"
 lab finish edit-editfile
+
+history -w
