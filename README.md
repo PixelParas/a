@@ -5,14 +5,14 @@ also add how to clone and run
 | Status | Lab Name | Section | Title |
 |---|---|---|---|
 | 🟢 | cli-desktop | Section 2.4 | Guided Exercise: Access the Command Line with the Desktop |
-| 🟡 | cli-review | Section 2.7 | Lab: Access the Command Line |
+| 🟢 | cli-review | Section 2.7 | Lab: Access the Command Line |
 | 🟢 | files-manage | Section 3.6 | Guided Exercise: Manage Files with Command-line Tools |
-| 🟡 | files-make | Section 3.8 | Guided Exercise: Make Links Between Files |
+| 🟢 | files-make | Section 3.8 | Guided Exercise: Make Links Between Files |
 | 🟢 | files-review | Section 3.11 | Lab: Manage Files from the Command Line |
-| 🟡 | help-manual | Section 4.2 | Guided Exercise: Read Manual Pages |
-| 🟡 | help-review | Section 4.3 | Lab: Get Help in Red Hat Enterprise Linux |
+| 🟢 | help-manual | Section 4.2 | Guided Exercise: Read Manual Pages |
+| 🟢 | help-review | Section 4.3 | Lab: Get Help in Red Hat Enterprise Linux |
 | 🟡 | edit-editfile | Section 5.4 | Guided Exercise: Edit Text Files from the Shell Prompt |
-| 🔴 | edit-bashconfig | Section 5.6 | Guided Exercise: Change the Shell Environment |
+| 🟡 | edit-bashconfig | Section 5.6 | Guided Exercise: Change the Shell Environment |
 | 🔴 | edit-review | Section 5.7 | Lab: Create, View, and Edit Text Files |
 | 🔴 | users-superuser | Section 6.4 | Guided Exercise: Gain Superuser Access |
 | 🔴 | users-user | Section 6.6 | Guided Exercise: Manage Local User Accounts |
