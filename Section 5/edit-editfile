@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#NOTE: For some reason you have to manually press ctrl+C when vintutor is ran
+
 clear
 
 # ============================================================

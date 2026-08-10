@@ -2,6 +2,7 @@
 
 clear
 
+#NOTE: when you type password you dont actually see it in terminal fix that
 
 # ============================================================
 # Clean history
