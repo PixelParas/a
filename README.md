@@ -18,7 +18,7 @@ also add how to clone and run
 | 🟢 | users-user | Section 6.6 | Guided Exercise: Manage Local User Accounts |
 | 🟢 | users-group | Section 6.8 | Guided Exercise: Manage Local Group Accounts |
 | 🟢 | users-password | Section 6.10 | Guided Exercise: Manage User Passwords |
-| 🟡 | users-review | Section 6.11 | Lab: Manage Local Users and Groups |
+| 🟢 | users-review | Section 6.11 | Lab: Manage Local Users and Groups |
 | 🔴 | perms-cli | Section 7.4 | Guided Exercise: Manage File System Permissions from the Command Line |
 | 🔴 | perms-default | Section 7.6 | Guided Exercise: Manage Default Permissions and File Access |
 | 🔴 | perms-review | Section 7.7 | Lab: Control Access to Files |
