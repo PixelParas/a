@@ -14,10 +14,10 @@ also add how to clone and run
 | 🟡 | edit-editfile | Section 5.4 | Guided Exercise: Edit Text Files from the Shell Prompt |
 | 🟢 | edit-bashconfig | Section 5.6 | Guided Exercise: Change the Shell Environment |
 | 🟡 | edit-review | Section 5.7 | Lab: Create, View, and Edit Text Files |
-| 🟡 | users-superuser | Section 6.4 | Guided Exercise: Gain Superuser Access |
-| 🟡 | users-user | Section 6.6 | Guided Exercise: Manage Local User Accounts |
-| 🟡 | users-group | Section 6.8 | Guided Exercise: Manage Local Group Accounts |
-| 🟡 | users-password | Section 6.10 | Guided Exercise: Manage User Passwords |
+| 🟢 | users-superuser | Section 6.4 | Guided Exercise: Gain Superuser Access |
+| 🟢 | users-user | Section 6.6 | Guided Exercise: Manage Local User Accounts |
+| 🟢 | users-group | Section 6.8 | Guided Exercise: Manage Local Group Accounts |
+| 🟢 | users-password | Section 6.10 | Guided Exercise: Manage User Passwords |
 | 🟡 | users-review | Section 6.11 | Lab: Manage Local Users and Groups |
 | 🔴 | perms-cli | Section 7.4 | Guided Exercise: Manage File System Permissions from the Command Line |
 | 🔴 | perms-default | Section 7.6 | Guided Exercise: Manage Default Permissions and File Access |
