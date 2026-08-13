@@ -42,13 +42,13 @@ also add how to clone and run
 | 🟡 | software-dnf | Section 12.6 | Guided Exercise: Install and Update Software Packages with DNF |
 | 🟡 | software-repo | Section 12.8 | Guided Exercise: Enable DNF Software Repositories |
 | 🟡 | software-review | Section 12.9 | Lab: Install and Update Software Packages |
-| 🔴 | — | Section 13.4 | Guided Exercise: Mount and Unmount File Systems |
-| 🔴 | — | Section 13.6 | Guided Exercise: Locate Files on the System |
-| 🔴 | — | Section 13.7 | Lab: Access Linux File Systems |
-| 🔴 | — | Section 14.2 | Guided Exercise: Analyze and Manage Remote Servers |
-| 🔴 | — | Section 14.4 | Guided Exercise: Create a Diagnostics Report |
-| 🔴 | — | Section 15.2 | Lab: Manage Files from the Command Line |
-| 🔴 | — | Section 15.3 | Lab: Manage Users and Groups, Permissions, and Processes |
-| 🔴 | — | Section 15.4 | Lab: Configure and Manage a Server |
-| 🔴 | — | Section 15.5 | Lab: Manage Networks |
-| 🔴 | — | Section 15.6 | Lab: Mount File Systems and Find Files |
+| 🔴 | fs-mount | Section 13.4 | Guided Exercise: Mount and Unmount File Systems |
+| 🔴 | fs-locate | Section 13.6 | Guided Exercise: Locate Files on the System |
+| 🔴 | fs-review | Section 13.7 | Lab: Access Linux File Systems |
+| 🔴 | support-cockpit | Section 14.2 | Guided Exercise: Analyze and Manage Remote Servers |
+| 🔴 | support-portal | Section 14.4 | Guided Exercise: Create a Diagnostics Report |
+| 🔴 | rhcsa-rh124-review1 | Section 15.2 | Lab: Manage Files from the Command Line |
+| 🔴 | rhcsa-rh124-review2 | Section 15.3 | Lab: Manage Users and Groups, Permissions, and Processes |
+| 🔴 | rhcsa-rh124-review3 | Section 15.4 | Lab: Configure and Manage a Server |
+| 🔴 | rhcsa-rh124-review4 | Section 15.5 | Lab: Manage Networks |
+| 🔴 | rhcsa-rh124-review5 | Section 15.6 | Lab: Mount File Systems and Find Files |
