@@ -42,6 +42,8 @@ history -s "man man"
 MANPAGER=cat man man | head -n 25
 
 # Step 2: Create PostScript file of passwd man page
+# FIX: Explicitly remove the file first to prevent 'noclobber' errors on rerun
+rm -f passwd.ps
 echo "[student@workstation ~]$ man -t passwd > passwd.ps"
 history -s "man -t passwd > passwd.ps"
 man -t passwd > passwd.ps
@@ -92,7 +94,7 @@ history -s "firefox /usr/share/doc &"
 timeout 2 firefox /usr/share/doc >/dev/null 2>&1 || true
 
 # ============================================================
-# Evaluation & Finish
+# Evaluation, Finish & Cleanup
 # ============================================================
 
 echo "[student@workstation ~]$ lab grade help-review"
@@ -102,5 +104,8 @@ lab grade help-review
 echo "[student@workstation ~]$ lab finish help-review"
 history -s "lab finish help-review"
 lab finish help-review
+
+# FIX: Clean up the generated file so the directory is spotless for the next run
+rm -f passwd.ps
 
 history -w
