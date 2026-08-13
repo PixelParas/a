@@ -26,9 +26,9 @@ also add how to clone and run
 | 🟡 | processes-kill | Section 8.6 | Guided Exercise: Kill Processes |
 | 🟡 | processes-monitor | Section 8.8 | Guided Exercise: Monitor Process Activity |
 | 🟡 | processes-review | Section 8.9 | Lab: Monitor and Manage Linux Processes |
-| 🔴 | services-identify | Section 9.2 | Guided Exercise: Identify Automatically Started System Processes |
-| 🔴 | services-control | Section 9.4 | Guided Exercise: Control System Services |
-| 🔴 | services-review | Section 9.5 | Lab: Control Services and Daemons |
+| 🟡 | services-identify | Section 9.2 | Guided Exercise: Identify Automatically Started System Processes |
+| 🟡 | services-control | Section 9.4 | Guided Exercise: Control System Services |
+| 🟡 | services-review | Section 9.5 | Lab: Control Services and Daemons |
 | 🔴 | ssh-access | Section 10.2 | Guided Exercise: Access the Remote Command Line |
 | 🔴 | ssh-configure | Section 10.4 | Guided Exercise: Configure SSH Key-based Authentication |
 | 🔴 | ssh-customize | Section 10.6 | Guided Exercise: Customize OpenSSH Service Configuration |
