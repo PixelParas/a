@@ -46,12 +46,12 @@ history -s "sudo -i"
 # Step 2: Create operators supplementary group with GID 30000
 echo "[root@servera ~]# groupadd -g 30000 operators"
 history -s "groupadd -g 30000 operators"
-ssh student@servera "sudo groupadd -g 30000 operators 2>/dev/null || true"
+ssh student@servera "echo student | sudo -S groupadd -g 30000 operators 2>/dev/null || true"
 
 # Step 3: Create admin supplementary group
 echo "[root@servera ~]# groupadd admin"
 history -s "groupadd admin"
-ssh student@servera "sudo groupadd admin 2>/dev/null || true"
+ssh student@servera "echo student | sudo -S groupadd admin 2>/dev/null || true"
 
 # Step 4: Verify both groups exist
 echo "[root@servera ~]# tail /etc/group"
@@ -61,15 +61,15 @@ ssh student@servera "tail /etc/group"
 # Step 5: Add operator users to operators group
 echo "[root@servera ~]# usermod -aG operators operator1"
 history -s "usermod -aG operators operator1"
-ssh student@servera "sudo usermod -aG operators operator1"
+ssh student@servera "echo student | sudo -S usermod -aG operators operator1"
 
 echo "[root@servera ~]# usermod -aG operators operator2"
 history -s "usermod -aG operators operator2"
-ssh student@servera "sudo usermod -aG operators operator2"
+ssh student@servera "echo student | sudo -S usermod -aG operators operator2"
 
 echo "[root@servera ~]# usermod -aG operators operator3"
 history -s "usermod -aG operators operator3"
-ssh student@servera "sudo usermod -aG operators operator3"
+ssh student@servera "echo student | sudo -S usermod -aG operators operator3"
 
 # Step 6: Verify operator users group membership
 echo "[root@servera ~]# id operator1"
@@ -87,15 +87,15 @@ ssh student@servera "id operator3"
 # Step 7: Add sysadmin users to admin group
 echo "[root@servera ~]# usermod -aG admin sysadmin1"
 history -s "usermod -aG admin sysadmin1"
-ssh student@servera "sudo usermod -aG admin sysadmin1"
+ssh student@servera "echo student | sudo -S usermod -aG admin sysadmin1"
 
 echo "[root@servera ~]# usermod -aG admin sysadmin2"
 history -s "usermod -aG admin sysadmin2"
-ssh student@servera "sudo usermod -aG admin sysadmin2"
+ssh student@servera "echo student | sudo -S usermod -aG admin sysadmin2"
 
 echo "[root@servera ~]# usermod -aG admin sysadmin3"
 history -s "usermod -aG admin sysadmin3"
-ssh student@servera "sudo usermod -aG admin sysadmin3"
+ssh student@servera "echo student | sudo -S usermod -aG admin sysadmin3"
 
 # Step 8: Verify sysadmin users group membership
 echo "[root@servera ~]# id sysadmin1"
@@ -115,10 +115,10 @@ echo "[root@servera ~]# tail /etc/group"
 history -s "tail /etc/group"
 ssh student@servera "tail /etc/group"
 
-# Step 10: Create sudoers configuration for admin group (overwrites file to prevent duplicates)
+# Step 10: Create sudoers configuration for admin group
 echo "[root@servera ~]# echo \"%admin ALL=(ALL) ALL\" >> /etc/sudoers.d/admin"
 history -s "echo \"%admin ALL=(ALL) ALL\" >> /etc/sudoers.d/admin"
-ssh student@servera "echo '%admin ALL=(ALL) ALL' | sudo tee /etc/sudoers.d/admin >/dev/null"
+ssh student@servera "echo student | sudo -S bash -c \"echo '%admin ALL=(ALL) ALL' > /etc/sudoers.d/admin\""
 
 # Step 11: Switch to sysadmin1 user and verify sudo execution
 echo "[root@servera ~]# su - sysadmin1"
@@ -126,7 +126,8 @@ history -s "su - sysadmin1"
 
 echo "[sysadmin1@servera ~]$ sudo cat /etc/sudoers.d/admin"
 history -s "sudo cat /etc/sudoers.d/admin"
-ssh student@servera "echo redhat | sudo -S -u sysadmin1 sudo -S cat /etc/sudoers.d/admin 2>/dev/null || sudo cat /etc/sudoers.d/admin"
+# Escalate to root using student pass, switch to sysadmin1, then run sudo with sysadmin1's pass (redhat)
+ssh student@servera "echo student | sudo -S su - sysadmin1 -c 'echo redhat | sudo -S cat /etc/sudoers.d/admin'"
 
 # Step 12: Exit user sessions and servera connection
 echo "[sysadmin1@servera ~]$ exit"
