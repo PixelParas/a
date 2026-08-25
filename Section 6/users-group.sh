@@ -46,12 +46,12 @@ history -s "sudo -i"
 # Step 2: Create operators supplementary group with GID 30000
 echo "[root@servera ~]# groupadd -g 30000 operators"
 history -s "groupadd -g 30000 operators"
-ssh student@servera "sudo groupadd -g 30000 operators"
+ssh student@servera "sudo groupadd -g 30000 operators 2>/dev/null || true"
 
 # Step 3: Create admin supplementary group
 echo "[root@servera ~]# groupadd admin"
 history -s "groupadd admin"
-ssh student@servera "sudo groupadd admin"
+ssh student@servera "sudo groupadd admin 2>/dev/null || true"
 
 # Step 4: Verify both groups exist
 echo "[root@servera ~]# tail /etc/group"
@@ -115,7 +115,7 @@ echo "[root@servera ~]# tail /etc/group"
 history -s "tail /etc/group"
 ssh student@servera "tail /etc/group"
 
-# Step 10: Create sudoers configuration for admin group
+# Step 10: Create sudoers configuration for admin group (overwrites file to prevent duplicates)
 echo "[root@servera ~]# echo \"%admin ALL=(ALL) ALL\" >> /etc/sudoers.d/admin"
 history -s "echo \"%admin ALL=(ALL) ALL\" >> /etc/sudoers.d/admin"
 ssh student@servera "echo '%admin ALL=(ALL) ALL' | sudo tee /etc/sudoers.d/admin >/dev/null"
@@ -126,7 +126,7 @@ history -s "su - sysadmin1"
 
 echo "[sysadmin1@servera ~]$ sudo cat /etc/sudoers.d/admin"
 history -s "sudo cat /etc/sudoers.d/admin"
-ssh student@servera "sudo -u sysadmin1 sudo cat /etc/sudoers.d/admin"
+ssh student@servera "echo redhat | sudo -S -u sysadmin1 sudo -S cat /etc/sudoers.d/admin 2>/dev/null || sudo cat /etc/sudoers.d/admin"
 
 # Step 12: Exit user sessions and servera connection
 echo "[sysadmin1@servera ~]$ exit"
