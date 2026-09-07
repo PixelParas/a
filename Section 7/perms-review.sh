@@ -46,12 +46,12 @@ history -s "sudo -i"
 # Step 2: Create /home/techdocs directory
 echo "[root@serverb ~]# mkdir /home/techdocs"
 history -s "mkdir /home/techdocs"
-ssh student@serverb "sudo mkdir -p /home/techdocs"
+ssh student@serverb "echo student | sudo -S mkdir -p /home/techdocs"
 
 # Step 3: Change group ownership of /home/techdocs to techdocs
 echo "[root@serverb ~]# chown :techdocs /home/techdocs"
 history -s "chown :techdocs /home/techdocs"
-ssh student@serverb "sudo chown :techdocs /home/techdocs"
+ssh student@serverb "echo student | sudo -S chown :techdocs /home/techdocs"
 
 # Step 4: Verify initial directory permissions
 echo "[root@serverb ~]# ls -ld /home/techdocs"
@@ -61,7 +61,7 @@ ssh student@serverb "ls -ld /home/techdocs"
 # Step 5: Set permissions to 2770 (setgid, rwx for owner/group, no access for others)
 echo "[root@serverb ~]# chmod 2770 /home/techdocs"
 history -s "chmod 2770 /home/techdocs"
-ssh student@serverb "sudo chmod 2770 /home/techdocs"
+ssh student@serverb "echo student | sudo -S chmod 2770 /home/techdocs"
 
 # Step 6: Verify updated directory permissions
 echo "[root@serverb ~]# ls -ld /home/techdocs"
@@ -74,16 +74,16 @@ history -s "su - tech1"
 
 echo "[tech1@serverb ~]$ touch /home/techdocs/tech1.txt"
 history -s "touch /home/techdocs/tech1.txt"
-ssh student@serverb "sudo -u tech1 touch /home/techdocs/tech1.txt"
+ssh student@serverb "echo student | sudo -S -u tech1 touch /home/techdocs/tech1.txt"
 
 echo "[tech1@serverb ~]$ exit"
 echo "logout"
 history -s "exit"
 
-# Step 8: Update UMASK to 077 in /etc/login.defs for login shells
+# Step 8: Update UMASK to 007 in /etc/login.defs for group collaboration
 echo "[root@serverb ~]# vim /etc/login.defs"
 history -s "vim /etc/login.defs"
-ssh student@serverb "sudo sed -i 's/^UMASK.*/UMASK           077/' /etc/login.defs"
+ssh student@serverb "echo student | sudo -S sed -i 's/^UMASK.*/UMASK           007/' /etc/login.defs"
 
 # Step 9: Exit root shell and log out from serverb
 echo "[root@serverb ~]# exit"
