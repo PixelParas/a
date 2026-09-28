@@ -46,20 +46,20 @@ history -s "sudo -i"
 # Step 2: Start and enable psacct service
 echo "[root@serverb ~]# systemctl start psacct"
 history -s "systemctl start psacct"
-ssh student@serverb "sudo systemctl start psacct"
+ssh student@serverb "echo student | sudo -S systemctl start psacct"
 
 echo "[root@serverb ~]# systemctl enable psacct"
 history -s "systemctl enable psacct"
-ssh student@serverb "sudo systemctl enable psacct"
+ssh student@serverb "echo student | sudo -S systemctl enable psacct"
 
 # Step 3: Stop and disable rsyslog service
 echo "[root@serverb ~]# systemctl stop rsyslog"
 history -s "systemctl stop rsyslog"
-ssh student@serverb "sudo systemctl stop rsyslog"
+ssh student@serverb "echo student | sudo -S systemctl stop rsyslog"
 
 echo "[root@serverb ~]# systemctl disable rsyslog"
 history -s "systemctl disable rsyslog"
-ssh student@serverb "sudo systemctl disable rsyslog"
+ssh student@serverb "echo student | sudo -S systemctl disable rsyslog"
 
 # Step 4: Reboot serverb machine
 echo "[root@serverb ~]# systemctl reboot"
@@ -67,8 +67,8 @@ echo "Connection to serverb closed by remote host."
 echo "Connection to serverb closed."
 history -s "systemctl reboot"
 
-ssh student@serverb "sudo systemctl reboot" || true
-sleep 10
+ssh student@serverb "echo student | sudo -S systemctl reboot" || true
+sleep 30 # Increased sleep to ensure serverb is online before lab grade runs
 
 # ============================================================
 # Evaluation & Finish
