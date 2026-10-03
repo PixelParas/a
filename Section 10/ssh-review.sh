@@ -48,18 +48,19 @@ history -s "su - production1"
 # Step 3: Generate passphrase-less SSH key pair on servera
 echo "[production1@servera ~]$ ssh-keygen"
 history -s "ssh-keygen"
-ssh student@servera "sudo -u production1 ssh-keygen -t rsa -N '' -f /home/production1/.ssh/id_rsa -q <<< y"
+ssh student@servera "echo student | sudo -S -u production1 ssh-keygen -t rsa -N '' -f /home/production1/.ssh/id_rsa -q <<< y 2>/dev/null"
 
 # Step 4: Copy public key to production1@serverb
 echo "[production1@servera ~]$ ssh-copy-id production1@serverb"
 history -s "ssh-copy-id production1@serverb"
-ssh student@servera "sudo -u production1 ssh-keyscan -H serverb >> /home/production1/.ssh/known_hosts 2>/dev/null"
-ssh student@servera "sudo -u production1 bash -c 'cat /home/production1/.ssh/id_rsa.pub | sshpass -p redhat ssh -o StrictHostKeyChecking=no production1@serverb \"mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys\"'"
+# Wrapped redirection inside bash -c so it executes as production1
+ssh student@servera "echo student | sudo -S -u production1 bash -c 'ssh-keyscan -H serverb >> /home/production1/.ssh/known_hosts' 2>/dev/null"
+ssh student@servera "echo student | sudo -S -u production1 bash -c 'cat /home/production1/.ssh/id_rsa.pub | sshpass -p redhat ssh -o StrictHostKeyChecking=no production1@serverb \"mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys\"' 2>/dev/null"
 
 # Step 5: Verify production1 key authentication from servera to serverb
 echo "[production1@servera ~]$ ssh production1@serverb hostname"
 history -s "ssh production1@serverb hostname"
-ssh student@servera "sudo -u production1 ssh -o StrictHostKeyChecking=no production1@serverb hostname"
+ssh student@servera "echo student | sudo -S -u production1 ssh -o StrictHostKeyChecking=no production1@serverb hostname 2>/dev/null"
 
 # Step 6: Exit production1 session
 echo "[production1@servera ~]$ exit"
@@ -73,12 +74,12 @@ history -s "ssh student@serverb"
 echo "[student@serverb ~]$ sudo -i"
 history -s "sudo -i"
 
-ssh student@serverb "sudo sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config"
-ssh student@serverb "sudo sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config"
+ssh student@serverb "echo student | sudo -S sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config 2>/dev/null"
+ssh student@serverb "echo student | sudo -S sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config 2>/dev/null"
 
 echo "[root@serverb ~]# systemctl reload sshd"
 history -s "systemctl reload sshd"
-ssh student@serverb "sudo systemctl reload sshd"
+ssh student@serverb "echo student | sudo -S systemctl reload sshd 2>/dev/null"
 
 echo "[root@serverb ~]# exit"
 echo "logout"
