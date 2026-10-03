@@ -48,14 +48,40 @@ history -s "su - production1"
 # Step 3: Generate passphrase-less SSH key pair on servera
 echo "[production1@servera ~]$ ssh-keygen"
 history -s "ssh-keygen"
-ssh student@servera "echo student | sudo -S -u production1 ssh-keygen -t rsa -N '' -f /home/production1/.ssh/id_rsa -q <<< y 2>/dev/null"
+
+# Ensure .ssh directory exists first, then generate key pair
+ssh student@servera "echo student | sudo -S bash -c '
+  mkdir -p /home/production1/.ssh
+  chmod 700 /home/production1/.ssh
+  chown production1:production1 /home/production1/.ssh
+  sudo -u production1 ssh-keygen -t rsa -N \"\" -f /home/production1/.ssh/id_rsa -q <<< y
+  chown -R production1:production1 /home/production1/.ssh
+  restorecon -R /home/production1/.ssh
+' 2>/dev/null"
 
 # Step 4: Copy public key to production1@serverb
 echo "[production1@servera ~]$ ssh-copy-id production1@serverb"
 history -s "ssh-copy-id production1@serverb"
-# Wrapped redirection inside bash -c so it executes as production1
-ssh student@servera "echo student | sudo -S -u production1 bash -c 'ssh-keyscan -H serverb >> /home/production1/.ssh/known_hosts' 2>/dev/null"
-ssh student@servera "echo student | sudo -S -u production1 bash -c 'cat /home/production1/.ssh/id_rsa.pub | sshpass -p redhat ssh -o StrictHostKeyChecking=no production1@serverb \"mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys\"' 2>/dev/null"
+
+# Extract public key string cleanly without sudo warning noise
+PUBKEY=$(ssh student@servera "echo student | sudo -S cat /home/production1/.ssh/id_rsa.pub 2>/dev/null | grep '^ssh-'")
+
+# Configure serverb with the public key, proper permissions, and SELinux contexts
+ssh student@serverb "echo student | sudo -S bash -c \"
+  mkdir -p /home/production1/.ssh
+  chmod 700 /home/production1/.ssh
+  echo '$PUBKEY' > /home/production1/.ssh/authorized_keys
+  chmod 600 /home/production1/.ssh/authorized_keys
+  chown -R production1:production1 /home/production1/.ssh
+  restorecon -R /home/production1/.ssh
+\" 2>/dev/null"
+
+# Add serverb host key to known_hosts on servera for production1
+ssh student@servera "echo student | sudo -S bash -c '
+  sudo -u production1 ssh-keyscan -H serverb >> /home/production1/.ssh/known_hosts 2>/dev/null
+  chown production1:production1 /home/production1/.ssh/known_hosts
+  chmod 600 /home/production1/.ssh/known_hosts
+' 2>/dev/null"
 
 # Step 5: Verify production1 key authentication from servera to serverb
 echo "[production1@servera ~]$ ssh production1@serverb hostname"
@@ -108,3 +134,4 @@ history -s "lab finish ssh-review"
 lab finish ssh-review
 
 history -w
+
