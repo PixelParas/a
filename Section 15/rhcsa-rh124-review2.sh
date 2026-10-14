@@ -24,6 +24,11 @@ clean_history() {
 
 clean_history
 
+# Helper function to run commands via SSH with sudo
+run_sudo_remote() {
+    ssh -t student@serverb "echo student | sudo -S $1"
+}
+
 # ============================================================
 # Start Lab
 # ============================================================
@@ -60,57 +65,57 @@ history -s "sudo -i"
 # Step 4: Create database group with GID 50000
 echo "[root@serverb ~]# groupadd -g 50000 database"
 history -s "groupadd -g 50000 database"
-ssh student@serverb "sudo groupadd -g 50000 database"
+run_sudo_remote "groupadd -g 50000 database"
 
 # Step 5: Create dbadmin1 user with supplementary group database
 echo "[root@serverb ~]# useradd -G database dbadmin1"
 history -s "useradd -G database dbadmin1"
-ssh student@serverb "sudo useradd -G database dbadmin1"
+run_sudo_remote "useradd -G database dbadmin1"
 
 # Step 6: Configure password and password aging parameters for dbadmin1
 echo "[root@serverb ~]# echo redhat | passwd --stdin dbadmin1"
 history -s "echo redhat | passwd --stdin dbadmin1"
-ssh student@serverb "echo 'redhat' | sudo passwd --stdin dbadmin1"
+ssh -t student@serverb "echo student | sudo -S bash -c 'echo redhat | passwd --stdin dbadmin1'"
 
 echo "[root@serverb ~]# chage -d 0 dbadmin1"
 history -s "chage -d 0 dbadmin1"
-ssh student@serverb "sudo chage -d 0 dbadmin1"
+run_sudo_remote "chage -d 0 dbadmin1"
 
 echo "[root@serverb ~]# chage -m 10 dbadmin1"
 history -s "chage -m 10 dbadmin1"
-ssh student@serverb "sudo chage -m 10 dbadmin1"
+run_sudo_remote "chage -m 10 dbadmin1"
 
 echo "[root@serverb ~]# chage -M 30 dbadmin1"
 history -s "chage -M 30 dbadmin1"
-ssh student@serverb "sudo chage -M 30 dbadmin1"
+run_sudo_remote "chage -M 30 dbadmin1"
 
 # Step 7: Configure sudo privileges for dbadmin1
 echo "[root@serverb ~]# echo \"dbadmin1 ALL=(ALL) ALL\" > /etc/sudoers.d/dbadmin1"
 history -s "echo \"dbadmin1 ALL=(ALL) ALL\" > /etc/sudoers.d/dbadmin1"
-ssh student@serverb "sudo bash -c 'echo \"dbadmin1 ALL=(ALL) ALL\" > /etc/sudoers.d/dbadmin1'"
+ssh -t student@serverb "echo student | sudo -S bash -c 'echo \"dbadmin1 ALL=(ALL) ALL\" > /etc/sudoers.d/dbadmin1'"
 
 # Step 8: Set default umask 007 for dbadmin1
 echo "[root@serverb ~]# echo \"umask 007\" >> /home/dbadmin1/.bashrc"
 history -s "echo \"umask 007\" >> /home/dbadmin1/.bashrc"
-ssh student@serverb "sudo bash -c 'echo \"umask 007\" >> /home/dbadmin1/.bashrc'"
+ssh -t student@serverb "echo student | sudo -S bash -c 'echo \"umask 007\" >> /home/dbadmin1/.bashrc'"
 
 # Step 9: Create and configure permissions on /home/dbadmin1/review2
 echo "[root@serverb ~]# mkdir /home/dbadmin1/review2"
 history -s "mkdir /home/dbadmin1/review2"
-ssh student@serverb "sudo mkdir -p /home/dbadmin1/review2"
+run_sudo_remote "mkdir -p /home/dbadmin1/review2"
 
 echo "[root@serverb ~]# chown dbadmin1:database /home/dbadmin1/review2"
 history -s "chown dbadmin1:database /home/dbadmin1/review2"
-ssh student@serverb "sudo chown dbadmin1:database /home/dbadmin1/review2"
+run_sudo_remote "chown dbadmin1:database /home/dbadmin1/review2"
 
 echo "[root@serverb ~]# chmod 3775 /home/dbadmin1/review2"
 history -s "chmod 3775 /home/dbadmin1/review2"
-ssh student@serverb "sudo chmod 3775 /home/dbadmin1/review2"
+run_sudo_remote "chmod 3775 /home/dbadmin1/review2"
 
 # Step 10: Configure permissions on /home/dbadmin1 to permit traversal without listing
 echo "[root@serverb ~]# chmod 711 /home/dbadmin1"
 history -s "chmod 711 /home/dbadmin1"
-ssh student@serverb "sudo chmod 711 /home/dbadmin1"
+run_sudo_remote "chmod 711 /home/dbadmin1"
 
 # Step 11: Exit root shell and serverb session
 echo "[root@serverb ~]# exit"
@@ -135,3 +140,4 @@ history -s "lab finish rhcsa-rh124-review2"
 lab finish rhcsa-rh124-review2
 
 history -w
+
