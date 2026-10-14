@@ -24,6 +24,11 @@ clean_history() {
 
 clean_history
 
+# Helper function to run commands via SSH with sudo
+run_sudo_remote() {
+    ssh -t student@serverb "echo student | sudo -S $1"
+}
+
 # ============================================================
 # Start Lab
 # ============================================================
@@ -51,31 +56,31 @@ ssh student@serverb "lsblk -fp /dev/vdb"
 
 echo "[root@serverb ~]# mkdir /review5-disk"
 history -s "mkdir /review5-disk"
-ssh student@serverb "sudo mkdir -p /review5-disk"
+run_sudo_remote "mkdir -p /review5-disk"
 
-TARGET_PART=$(ssh student@serverb "sudo lsblk -fno NAME,FSTYPE /dev/vdb 2>/dev/null | grep xfs | awk '{print \$1}' | head -n1")
+TARGET_PART=$(ssh -t student@serverb "echo student | sudo -S lsblk -fno NAME,FSTYPE /dev/vdb 2>/dev/null | grep xfs | awk '{print \$1}' | head -n1" 2>/dev/null | tr -d '\r')
 if [ -z "$TARGET_PART" ]; then
-    TARGET_PART="vdb1"
+    TARGET_PART="/dev/vdb1"
 fi
 
-echo "[root@serverb ~]# mount /dev/$TARGET_PART /review5-disk"
-history -s "mount /dev/$TARGET_PART /review5-disk"
-ssh student@serverb "sudo mount /dev/$TARGET_PART /review5-disk"
+echo "[root@serverb ~]# mount $TARGET_PART /review5-disk"
+history -s "mount $TARGET_PART /review5-disk"
+run_sudo_remote "mount $TARGET_PART /review5-disk"
 
 # Step 3: Find review5-path file and store its absolute path
 echo "[root@serverb ~]# find / -name review5-path 2>/dev/null > /review5-disk/review5-path.txt"
 history -s "find / -name review5-path 2>/dev/null > /review5-disk/review5-path.txt"
-ssh student@serverb "sudo bash -c 'find / -name review5-path 2>/dev/null > /review5-disk/review5-path.txt'"
+ssh -t student@serverb "echo student | sudo -S bash -c 'find / -name review5-path 2>/dev/null > /review5-disk/review5-path.txt'"
 
 # Step 4: Find files owned by contractor1:contractor with 640 permissions
 echo "[root@serverb ~]# find / -user contractor1 -group contractor -perm 640 2>/dev/null > /review5-disk/review5-perms.txt"
 history -s "find / -user contractor1 -group contractor -perm 640 2>/dev/null > /review5-disk/review5-perms.txt"
-ssh student@serverb "sudo bash -c 'find / -user contractor1 -group contractor -perm 640 2>/dev/null > /review5-disk/review5-perms.txt'"
+ssh -t student@serverb "echo student | sudo -S bash -c 'find / -user contractor1 -group contractor -perm 640 2>/dev/null > /review5-disk/review5-perms.txt'"
 
 # Step 5: Find files with size 100 bytes
 echo "[root@serverb ~]# find / -size 100c 2>/dev/null > /review5-disk/review5-size.txt"
 history -s "find / -size 100c 2>/dev/null > /review5-disk/review5-size.txt"
-ssh student@serverb "sudo bash -c 'find / -size 100c 2>/dev/null > /review5-disk/review5-size.txt'"
+ssh -t student@serverb "echo student | sudo -S bash -c 'find / -size 100c 2>/dev/null > /review5-disk/review5-size.txt'"
 
 # Step 6: Exit root shell and serverb session
 echo "[root@serverb ~]# exit"
