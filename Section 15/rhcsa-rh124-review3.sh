@@ -24,6 +24,11 @@ clean_history() {
 
 clean_history
 
+# Helper function to run commands via SSH with sudo
+run_sudo_remote() {
+    ssh -t student@serverb "echo student | sudo -S $1"
+}
+
 # ============================================================
 # Start Lab
 # ============================================================
@@ -66,22 +71,22 @@ history -s "sudo -i"
 echo "[root@serverb ~]# vim /etc/ssh/sshd_config.d/01-custom.conf"
 history -s "vim /etc/ssh/sshd_config.d/01-custom.conf"
 
-ssh student@serverb "sudo bash -c 'cat <<EOF > /etc/ssh/sshd_config.d/01-custom.conf
+ssh -t student@serverb "echo student | sudo -S bash -c 'cat <<EOF > /etc/ssh/sshd_config.d/01-custom.conf
 PermitRootLogin no
 PasswordAuthentication no
 EOF'"
 
-ssh student@serverb "sudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config"
-ssh student@serverb "sudo sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config"
+ssh -t student@serverb "echo student | sudo -S sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config"
+ssh -t student@serverb "echo student | sudo -S sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config"
 
 echo "[root@serverb ~]# systemctl reload sshd"
 history -s "systemctl reload sshd"
-ssh student@serverb "sudo systemctl reload sshd"
+run_sudo_remote "systemctl reload sshd"
 
 # Step 6: Install zsh package on serverb
 echo "[root@serverb ~]# dnf install -y zsh"
 history -s "dnf install -y zsh"
-ssh student@serverb "sudo dnf install -y zsh"
+run_sudo_remote "dnf install -y zsh"
 
 # Step 7: Exit root and serverb session
 echo "[root@serverb ~]# exit"
