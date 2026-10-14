@@ -24,6 +24,11 @@ clean_history() {
 
 clean_history
 
+# Helper function to run commands via SSH with sudo
+run_sudo_remote() {
+    ssh -t student@serverb "echo student | sudo -S $1"
+}
+
 # ============================================================
 # Start Lab
 # ============================================================
@@ -47,13 +52,13 @@ history -s "sudo -i"
 # Step 2: Determine Ethernet interface and active profile
 echo "[root@serverb ~]# nmcli device status"
 history -s "nmcli device status"
-ssh student@serverb "sudo nmcli device status"
+run_sudo_remote "nmcli device status"
 
 echo "[root@serverb ~]# nmcli connection show"
 history -s "nmcli connection show"
-ssh student@serverb "sudo nmcli connection show"
+run_sudo_remote "nmcli connection show"
 
-ORIG_CONN=$(ssh student@serverb "sudo nmcli -t -f NAME,DEVICE connection show --active | grep ':eth0' | cut -d: -f1")
+ORIG_CONN=$(ssh -t student@serverb "echo student | sudo -S nmcli -t -f NAME,DEVICE connection show --active | grep ':eth0' | cut -d: -f1" 2>/dev/null | tr -d '\r')
 if [ -z "$ORIG_CONN" ]; then
     ORIG_CONN="eth0"
 fi
@@ -61,35 +66,35 @@ fi
 # Step 3: Create and activate static connection profile
 echo "[root@serverb ~]# nmcli connection add con-name static type ethernet ifname eth0 ipv4.addresses 172.25.250.111/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254 ipv4.method manual"
 history -s "nmcli connection add con-name static type ethernet ifname eth0 ipv4.addresses 172.25.250.111/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254 ipv4.method manual"
-ssh student@serverb "sudo nmcli connection add con-name static type ethernet ifname eth0 ipv4.addresses 172.25.250.111/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254 ipv4.method manual"
+run_sudo_remote "nmcli connection add con-name static type ethernet ifname eth0 ipv4.addresses 172.25.250.111/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254 ipv4.method manual"
 
 echo "[root@serverb ~]# nmcli connection up static"
 history -s "nmcli connection up static"
-ssh student@serverb "sudo nmcli connection up static"
+run_sudo_remote "nmcli connection up static"
 
 # Step 4: Set hostname for serverb
 echo "[root@serverb ~]# hostnamectl set-hostname server-review4.lab4.example.com"
 history -s "hostnamectl set-hostname server-review4.lab4.example.com"
-ssh student@serverb "sudo hostnamectl set-hostname server-review4.lab4.example.com"
+run_sudo_remote "hostnamectl set-hostname server-review4.lab4.example.com"
 
 # Step 5: Add canonical hostname entry for 172.25.250.10 in /etc/hosts
 echo "[root@serverb ~]# vim /etc/hosts"
 history -s "vim /etc/hosts"
-ssh student@serverb "sudo bash -c 'grep -q \"172.25.250.10\" /etc/hosts || echo \"172.25.250.10 client-review4\" >> /etc/hosts'"
+ssh -t student@serverb "echo student | sudo -S bash -c 'grep -q \"172.25.250.10\" /etc/hosts || echo \"172.25.250.10 client-review4\" >> /etc/hosts'"
 
 # Step 6: Add secondary IP address 172.25.250.211/24 to static connection
 echo "[root@serverb ~]# nmcli connection modify static +ipv4.addresses 172.25.250.211/24"
 history -s "nmcli connection modify static +ipv4.addresses 172.25.250.211/24"
-ssh student@serverb "sudo nmcli connection modify static +ipv4.addresses 172.25.250.211/24"
+run_sudo_remote "nmcli connection modify static +ipv4.addresses 172.25.250.211/24"
 
 echo "[root@serverb ~]# nmcli connection up static"
 history -s "nmcli connection up static"
-ssh student@serverb "sudo nmcli connection up static"
+run_sudo_remote "nmcli connection up static"
 
 # Step 7: Restore original connection profile
 echo "[root@serverb ~]# nmcli connection up $ORIG_CONN"
 history -s "nmcli connection up $ORIG_CONN"
-ssh student@serverb "sudo nmcli connection up '$ORIG_CONN'"
+run_sudo_remote "nmcli connection up '$ORIG_CONN'"
 
 # Step 8: Exit serverb session
 echo "[root@serverb ~]# exit"
