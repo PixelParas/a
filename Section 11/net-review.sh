@@ -24,6 +24,12 @@ clean_history() {
 
 clean_history
 
+# Clear the old host key for serverb from workstation's known_hosts
+ssh-keygen -R serverb 2>/dev/null || true
+
+# SSH helper flags to avoid host key warnings and TTY prompts
+SSH_CMD="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null student@serverb"
+
 # ============================================================
 # Start Lab
 # ============================================================
@@ -41,16 +47,15 @@ echo "[student@workstation ~]$ ssh student@serverb"
 history -s "ssh student@serverb"
 
 echo "[student@serverb ~]$ sudo -i"
-echo "[sudo] password for student: student"
 history -s "sudo -i"
 
 # Determine primary network interface with MAC 52:54:00:00:fa:0b
-ETH_B=$(ssh student@serverb "ip -o link show | grep -i '52:54:00:00:fa:0b' | awk -F': ' '{print \$2}' | head -n1")
+ETH_B=$($SSH_CMD "ip -o link show | grep -i '52:54:00:00:fa:0b' | awk -F': ' '{print \$2}' | head -n1" 2>/dev/null)
 if [ -z "$ETH_B" ]; then
     ETH_B="eth0"
 fi
 
-ORIG_CON_B=$(ssh student@serverb "sudo nmcli -t -f NAME,DEVICE con show --active | grep \":$ETH_B\" | cut -d: -f1")
+ORIG_CON_B=$($SSH_CMD "echo student | sudo -S nmcli -t -f NAME,DEVICE con show --active 2>/dev/null | grep \":$ETH_B\" | cut -d: -f1")
 if [ -z "$ORIG_CON_B" ]; then
     ORIG_CON_B="System eth0"
 fi
@@ -58,31 +63,31 @@ fi
 # Step 2: Create new static connection named 'lab'
 echo "[root@serverb ~]# nmcli con add con-name lab ifname $ETH_B type ethernet ipv4.method manual ipv4.addresses 172.25.250.11/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254"
 history -s "nmcli con add con-name lab ifname $ETH_B type ethernet ipv4.method manual ipv4.addresses 172.25.250.11/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254"
-ssh student@serverb "sudo nmcli con add con-name lab ifname $ETH_B type ethernet ipv4.method manual ipv4.addresses 172.25.250.11/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254"
+$SSH_CMD "echo student | sudo -S nmcli con add con-name lab ifname $ETH_B type ethernet ipv4.method manual ipv4.addresses 172.25.250.11/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254 2>/dev/null"
 
 # Step 3: Disable autoconnect on original connection and set autoconnect on 'lab'
 echo "[root@serverb ~]# nmcli con mod \"$ORIG_CON_B\" connection.autoconnect no"
 history -s "nmcli con mod \"$ORIG_CON_B\" connection.autoconnect no"
-ssh student@serverb "sudo nmcli con mod \"$ORIG_CON_B\" connection.autoconnect no"
+$SSH_CMD "echo student | sudo -S nmcli con mod \"$ORIG_CON_B\" connection.autoconnect no 2>/dev/null"
 
 echo "[root@serverb ~]# nmcli con mod lab connection.autoconnect yes"
 history -s "nmcli con mod lab connection.autoconnect yes"
-ssh student@serverb "sudo nmcli con mod lab connection.autoconnect yes"
+$SSH_CMD "echo student | sudo -S nmcli con mod lab connection.autoconnect yes 2>/dev/null"
 
 # Step 4: Add secondary IP address 10.0.1.1/24 to 'lab' connection
 echo "[root@serverb ~]# nmcli con mod lab +ipv4.addresses 10.0.1.1/24"
 history -s "nmcli con mod lab +ipv4.addresses 10.0.1.1/24"
-ssh student@serverb "sudo nmcli con mod lab +ipv4.addresses 10.0.1.1/24"
+$SSH_CMD "echo student | sudo -S nmcli con mod lab +ipv4.addresses 10.0.1.1/24 2>/dev/null"
 
 # Step 5: Activate 'lab' connection
 echo "[root@serverb ~]# nmcli con up lab"
 history -s "nmcli con up lab"
-ssh student@serverb "sudo nmcli con up lab"
+$SSH_CMD "echo student | sudo -S nmcli con up lab 2>/dev/null"
 
 # Step 6: Configure /etc/hosts for 'private' hostname mapping
 echo "[root@serverb ~]# vim /etc/hosts"
 history -s "vim /etc/hosts"
-ssh student@serverb "sudo bash -c 'grep -q \"10.0.1.1\" /etc/hosts || echo \"10.0.1.1 private\" >> /etc/hosts'"
+$SSH_CMD "echo student | sudo -S bash -c 'grep -q \"10.0.1.1\" /etc/hosts || echo \"10.0.1.1 private\" >> /etc/hosts' 2>/dev/null"
 
 # Step 7: Reboot system to verify settings persistence
 echo "[root@serverb ~]# systemctl reboot"
@@ -90,8 +95,8 @@ echo "Connection to serverb closed by remote host."
 echo "Connection to serverb closed."
 history -s "systemctl reboot"
 
-ssh student@serverb "sudo systemctl reboot" || true
-sleep 10
+$SSH_CMD "echo student | sudo -S systemctl reboot 2>/dev/null" || true
+sleep 30
 
 # Step 8: Log back in and verify active connection
 echo "[student@workstation ~]$ ssh student@serverb"
@@ -99,11 +104,11 @@ history -s "ssh student@serverb"
 
 echo "[student@serverb ~]$ nmcli con show --active"
 history -s "nmcli con show --active"
-ssh student@serverb "nmcli con show --active"
+$SSH_CMD "nmcli con show --active 2>/dev/null"
 
 echo "[student@serverb ~]$ ip -br addr show $ETH_B"
 history -s "ip -br addr show $ETH_B"
-ssh student@serverb "ip -br addr show $ETH_B"
+$SSH_CMD "ip -br addr show $ETH_B 2>/dev/null"
 
 echo "[student@serverb ~]$ exit"
 echo "logout"
