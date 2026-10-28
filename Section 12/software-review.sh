@@ -41,29 +41,24 @@ echo "[student@workstation ~]$ ssh student@serverb"
 history -s "ssh student@serverb"
 
 echo "[student@serverb ~]$ sudo -i"
-echo "[sudo] password for student: student"
 history -s "sudo -i"
 
 # Step 2: Create /etc/yum.repos.d/errata.repo repository file
 echo "[root@serverb ~]# vim /etc/yum.repos.d/errata.repo"
 history -s "vim /etc/yum.repos.d/errata.repo"
-ssh student@serverb "sudo bash -c 'cat <<EOF > /etc/yum.repos.d/errata.repo
-[errata]
-name=errata
-baseurl=http://content.example.com/rhel9.3/x86_64/rhcsa-practice/errata
-enabled=1
-gpgcheck=0
-EOF'"
+
+# Properly structured repo creation over SSH using sudo and bash -c
+ssh -o StrictHostKeyChecking=no student@serverb "echo student | sudo -S bash -c 'echo -e \"[errata]\nname=errata\nbaseurl=http://content.example.com/rhel9.3/x86_64/rhcsa-practice/errata\nenabled=1\ngpgcheck=0\" > /etc/yum.repos.d/errata.repo' 2>/dev/null"
 
 # Step 3: Install rht-system package
 echo "[root@serverb ~]# dnf install rht-system"
 history -s "dnf install rht-system"
-ssh student@serverb "sudo dnf install -y rht-system"
+ssh -o StrictHostKeyChecking=no student@serverb "echo student | sudo -S dnf install -y rht-system 2>/dev/null"
 
 # Step 4: Remove cups package to disable printing capabilities
 echo "[root@serverb ~]# dnf remove cups"
 history -s "dnf remove cups"
-ssh student@serverb "sudo dnf remove -y cups"
+ssh -o StrictHostKeyChecking=no student@serverb "echo student | sudo -S dnf remove -y cups 2>/dev/null"
 
 # Step 5: Exit root shell on serverb
 echo "[root@serverb ~]# exit"
@@ -73,17 +68,16 @@ history -s "exit"
 # Step 6: Verify and install rhcsa-script RPM package as student with sudo
 echo "[student@serverb ~]$ ls -l rhcsa-script-1.0.0-1.noarch.rpm"
 history -s "ls -l rhcsa-script-1.0.0-1.noarch.rpm"
-ssh student@serverb "ls -l rhcsa-script-1.0.0-1.noarch.rpm"
+ssh -o StrictHostKeyChecking=no student@serverb "ls -l rhcsa-script-1.0.0-1.noarch.rpm 2>/dev/null"
 
 echo "[student@serverb ~]$ sudo rpm -ivh rhcsa-script-1.0.0-1.noarch.rpm"
-echo "[sudo] password for student: student"
 history -s "sudo rpm -ivh rhcsa-script-1.0.0-1.noarch.rpm"
-ssh student@serverb "echo student | sudo -S rpm -ivh rhcsa-script-1.0.0-1.noarch.rpm"
+ssh -o StrictHostKeyChecking=no student@serverb "echo student | sudo -S rpm -ivh rhcsa-script-1.0.0-1.noarch.rpm 2>/dev/null"
 
 # Step 7: Verify package installation
 echo "[student@serverb ~]$ rpm -q rhcsa-script"
 history -s "rpm -q rhcsa-script"
-ssh student@serverb "rpm -q rhcsa-script"
+ssh -o StrictHostKeyChecking=no student@serverb "rpm -q rhcsa-script 2>/dev/null"
 
 # Step 8: Exit serverb connection
 echo "[student@serverb ~]$ exit"
